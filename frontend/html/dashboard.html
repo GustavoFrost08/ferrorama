@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+
+
+    <header class="hdr">
+        <div>
+            <img src="../assets/Logo.png" alt="Logo">
+        </div>
+
+
+        <nav class="tabelas-nav">
+            <a href="../html/dashboard.html" class="tab-btn ativo">Home</a>
+            <a href="../html/trens.html" class="tab-btn">Trens</a>
+            <a href="../html/sensores.html" class="tab-btn">Sensores</a>
+            <a href="../html/relatorios.html" class="tab-btn">Relatórios</a>
+            <a href="../html/usuarios.html" class="tab-btn">Usuários</a>
+        </nav>
+
+
+        <div>
+            <button class="btn-conta">Minha Conta</button>
+        </div>
+    </header>
+
+
+    <main class="box_maior">
+
+
+        <!-- LADO ESQUERDO -->
+        <div class="container_esq">
+
+
+                       <div class="linha_cima">
+                <h2>VISÃO GERAL DA FROTA</h2>
+                <div class="frota">
+                    <div class="img_status status-verde">✓</div>
+                    <div class="text_frota">
+                        <p class="titulo-frota">Trens ativos</p>
+                        <p class="num-frota cor-verde" id="qtd-ativos">--</p>
+                        <p class="sub-frota">Em operação normal</p>
+                    </div>
+                </div>
+
+                <div class="frota">
+                    <div class="img_status status-amarelo">!</div>
+                    <div class="text_frota">
+                        <p class="titulo-frota">Em manutenção</p>
+                        <p class="num-frota cor-amarelo" id="qtd-manutencao">--</p>
+                        <p class="sub-frota">Manutenções programadas</p>
+                    </div>
+                </div>
+
+                <div class="frota">
+                    <div class="img_status status-vermelho">X</div>
+                    <div class="text_frota">
+                        <p class="titulo-frota">Parado</p>
+                        <p class="num-frota cor-vermelho" id="qtd-parado">--</p>
+                        <p class="sub-frota">Fora de operação</p>
+                    </div>
+                </div>
+            </div>  
+
+
+            <div class="linha_meio">
+                <h2>INDICADORES PRINCIPAIS</h2>
+                <div class="indicadores">
+              <div class="icone-indicador velocidade">◷</div>
+              <div class="text_ind">
+                <p class="titulo-indicador">Velocidade média</p>
+                    <p class="valor-indicador azul" id="velocidade-media">-- km/h</p>
+                   </div>
+                    </div>
+
+                   <div class="indicadores">
+                       <div class="icone-indicador alerta">!</div>
+                    <div class="text_ind">
+                         <p class="titulo-indicador">Alertas ativos</p>
+                            <p class="valor-indicador amarelo" id="alertas-ativos">--</p>
+                                             <p class="sub-indicador">Requerem atenção</p>
+                                                </div>
+                                           </div>
+
+                          <div class="indicadores">
+                 <div class="icone-indicador sensor">▣</div>
+                      <div class="text_ind">
+           <p class="titulo-indicador">Sensores críticos</p>
+                       <p class="valor-indicador vermelho" id="sensores-criticos">--</p>
+             <p class="sub-indicador">Leitura acima do limite</p>
+                       </div>
+                       </div>
+
+                    </div>
+
+            <div class="tabela_dash">
+                <table></table>
+            </div>
+
+
+            <!-- CONTAINER BAIXO -->
+           <div class="container_baixo">
+    <h2>ESTADO DA FROTA</h2>
+
+    <div class="box_tabela">
+        <table class="tabela-frota">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Número de série</th>
+                    <th>Status</th>
+                    <th>Linha</th>
+                    <th>Modelo</th>
+                </tr>
+            </thead>
+
+            <tbody id="tabela-frota">
+                <tr>
+                    <td colspan="5">Carregando...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+        </div> <!-- FIM DO CONTAINER ESQ -->
+
+
+        <!-- LADO DIREITO -->
+        <div class="container_dir">
+            <div class="alerta_box">
+
+    <div class="titulo_alertas">
+    <h4>Alertas críticos</h4>
+    <a href="../html/alertas.html">ver todos</a>
+</div>
+
+    <div id="lista-alertas">
+        <p>Carregando...</p>
+    </div>
+
+</div>
+          <div class="eventos_box">
+    <div class="titulo_eventos">
+        <h4>Eventos</h4>
+        <a href="../html/eventos.html">ver todos</a>
+    </div>
+
+    <div id="lista-eventos">
+        <p>Carregando...</p>
+    </div>
+</div>
+    </main>
+
+
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Container Principal Split-Screen */
+.container {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* --- LADO ESQUERDO (Escuro) --- */
+.esquerda {
+    flex: 1.3;
+    background-color:  #3d2514; /* Tom marrom escuro */
+    color: #FFFFFF;
+    padding: 40px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.logo img {
+    max-height: 35px;
+    object-fit: contain;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.content h1 {
+    font-size: 2.2rem;
+    font-weight: 300;
+    line-height: 1.3;
+    margin-bottom: 40px;
+    color: #F5EBE6;
+}
+
+.content h1 span {
+    color: #9C7A68; /* Destaque marrom suave para "tempo real." */
+}
+
+.banner-img img {
+    max-width: 90%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* --- LADO DIREITO (Claro) --- */
+.direita {
+    flex: 1;
+    background-color: #a38c7a; /* Tom marrom claro/médio */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.login-box {
+    width: 100%;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.login-box h2 {
+    color: #FFFFFF;
+    font-size: 1.5rem;
+    font-weight: 600;
+    align-self: flex-start;
+    margin-bottom: 10px;
+}
+
+.input-login {
+    width: 100%;
+}
+
+.input-login input {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 25px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.3); /* Transparência suave dos inputs */
+    color: #FFFFFF;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.input-login input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Botões */
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 25px;
+    border: none;
+    background-color: #4A2B1D; /* Marrom escuro */
+    color: #FFFFFF;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.login-btn:hover {
+    background-color: #382015;
+}
+
+.esqueceu {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin: 5px 0;
+}
+
+.esqueceu:hover {
+    text-decoration: underline;
+}
+
+.social-btn, .registro-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 25px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #FFFFFF;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.social-btn:hover, .registro-btn:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.facebook {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .esquerda, .direita {
+        flex: auto;
+        padding: 40px 20px;
+    }
+
+    .content h1 {
+        font-size: 1.6rem;
+    }
+}

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuários - TrainFerro</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/usuarios.css">
+</head>
+<body>
+
+    <header class="hdr">
+        <div>
+            <img src="../assets/Logo.png" alt="Logo TrainFerro">
+        </div>
+
+        <nav class="tabelas-nav">
+            <a href="../html/dashboard.html" class="tab-btn">Home</a>
+            <a href="../html/trens.html" class="tab-btn">Trens</a>
+            <a href="../html/sensores.html" class="tab-btn">Sensores</a>
+            <a href="../html/relatorios.html" class="tab-btn">Relatórios</a>
+            <a href="../html/usuarios.html" class="tab-btn ativo">Usuários</a>
+        </nav>
+
+        <div>
+            <button class="btn-conta">Minha Conta</button>
+        </div>
+    </header>
+
+    <main class="box_maior">
+
+        <!-- lado esquerdo -->
+        <div class="container_esq">
+
+            <!-- titulo da pagina e botao de acao -->
+            <div class="header_pagina">
+                <div class="titulo_pagina">
+                    <h2>Usuários do sistema</h2>
+                    <p>Gerencie acessos e permissões da plataforma ferroviária</p>
+                </div>
+
+                <button class="btn_add_usuario">
+                    <span class="icon_user">+</span> Adicionar usuário
+                </button>
+            </div>
+
+            <!-- cards de resumo da banca -->
+            <div class="linha_cima">
+                <!-- conteúdo dos cards preenchidos-->
+                <div class="frota">
+                    <div class="img_status"><img src="" alt=""></div>
+                    <div class="text_frota"></div>
+                </div>
+                <div class="frota">
+                    <div class="img_status"><img src="" alt=""></div>
+                    <div class="text_frota"></div>
+                </div>
+                <div class="frota">
+                    <div class="img_status"><img src="" alt=""></div>
+                    <div class="text_frota"></div>
+                </div>
+                <div class="frota">
+                    <div class="img_status"><img src="" alt=""></div>
+                    <div class="text_frota"></div>
+                </div>
+            </div>
+
+            <!-- filtros e tabelas -->
+            <div class="container_baixo">
+
+                <!-- filtros de pesquisa -->
+                <div class="box_filtros_usuarios">
+                    <input type="text" placeholder="Buscar por nome ou e-mail..." class="input_busca">
+                    <select><option value="">Todos</option></select>
+                    <select><option value="">Todos</option></select>
+                    <button class="btn_filtrar">Filtrar</button>
+                </div>
+
+                <!-- tabela de usuarios -->
+                <div class="box_tabela">
+                    <table>
+                        <!-- tabela e cabeçalhos gerados dinamicamente-->
+                    </table>
+                </div>
+
+                <!-- rodapé da tabela / paginaaoo -->
+                <div class="rodape_tabela">
+                    <div class="paginacao">
+                        <!-- paginação renderizada-->
+                    </div>
+                </div>
+
+            </div>
+
+        </div> <!-- fim container_esq -->
+
+    </main>
+
+    <script src="../js/usuarios.js"></script>
+</body>
+</html>

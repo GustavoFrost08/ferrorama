@@ -1,0 +1,398 @@
+/* =========================================
+   RELATÓRIOS
+========================================= */
+
+.filtros_topo {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.input_data,
+.select_filtro,
+.input_busca,
+select {
+    background-color: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 9px 12px;
+    font-size: 0.8rem;
+    outline: none;
+}
+
+
+/* =========================================
+   CARDS
+========================================= */
+
+.linha_cima {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+}
+
+.linha_cima .frota {
+    flex: 1;
+    min-height: 95px;
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.img_status {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.sensor-icon {
+    background: #70513d;
+}
+
+.status-normal {
+    background: #299b18;
+    color: white;
+}
+
+.status-alerta {
+    background: #d5b400;
+    color: white;
+}
+
+.status-critico {
+    background: #e00000;
+    color: white;
+}
+
+.text_frota {
+    display: flex;
+    flex-direction: column;
+}
+
+.text_frota span {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.text_frota strong {
+    font-size: 2rem;
+    line-height: 1;
+    margin: 5px 0;
+    color: white;
+}
+
+.text_frota small {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+}
+
+.linha_cima .frota:nth-child(2) strong {
+    color: #299b18;
+}
+
+.linha_cima .frota:nth-child(3) strong {
+    color: #d5b400;
+}
+
+.linha_cima .frota:nth-child(4) strong {
+    color: #e00000;
+}
+
+
+/* =========================================
+   BOTÃO GERAR RELATÓRIO
+========================================= */
+
+.btn_gerar_relatorio {
+    width: 250px;
+    min-width: 250px;
+    height: 95px;
+
+    background-color: transparent;
+    border: 1px solid #c9a993;
+    border-radius: 8px;
+
+    color: #d8c0b0;
+    font-size: 0.9rem;
+    font-weight: bold;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    cursor: pointer;
+}
+
+.icon_relatorio {
+    font-size: 30px;
+}
+
+
+/* =========================================
+   GRÁFICOS
+========================================= */
+
+.linha_graficos {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.grafico_box_linha {
+    flex: 2;
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.grafico_box_rosca {
+    flex: 1;
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.grafico_header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.grafico_header h2,
+.grafico_box_rosca h2 {
+    font-size: 0.75rem;
+    color: #d8c0b0;
+    margin: 0;
+}
+
+.grafico_header span {
+    font-size: 0.7rem;
+    font-weight: normal;
+    opacity: 0.7;
+}
+
+.area_grafico_linha {
+    width: 100%;
+    height: 200px;
+}
+
+#graficoOcorrencias {
+    width: 100%;
+    height: 185px;
+}
+
+.grafico_legenda {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    font-size: 0.6rem;
+    margin-bottom: 2px;
+}
+
+.grafico_legenda span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.leg {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.trem01 {
+    background: #f97316;
+}
+
+.trem02 {
+    background: #22c55e;
+}
+
+.trem03 {
+    background: #3b82f6;
+}
+
+
+/* =========================================
+   GRÁFICO ROSCA
+========================================= */
+
+.area_grafico_rosca {
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rosca-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.rosca {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+
+    background:
+        conic-gradient(
+            #e00000 0deg 162deg,
+            #ff8c00 162deg 270deg,
+            #299b18 270deg 360deg
+        );
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rosca-centro {
+    width: 82px;
+    height: 82px;
+    border-radius: 50%;
+    background: var(--bg-card);
+}
+
+.rosca-legenda {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 0.65rem;
+}
+
+.rosca-legenda div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.rosca-legenda strong {
+    margin-left: 3px;
+}
+
+.quadrado {
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+}
+
+.quadrado.critico {
+    background: #e00000;
+}
+
+.quadrado.alerta {
+    background: #ff8c00;
+}
+
+.quadrado.normal {
+    background: #299b18;
+}
+
+
+/* =========================================
+   TABELA
+========================================= */
+
+.container_baixo {
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 12px;
+}
+
+.tabela_header_filtros {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.tabela_header_filtros h2 {
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.box_filtros {
+    display: flex;
+    gap: 8px;
+}
+
+.input_busca {
+    width: 150px;
+}
+
+.box_tabela {
+    width: 100%;
+}
+
+.box_tabela table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+}
+
+.box_tabela th {
+    color: #d8c0b0;
+    font-weight: bold;
+    padding: 8px;
+    border-bottom: 2px solid #98735e;
+}
+
+.box_tabela td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #98735e;
+    color: #d8c0b0;
+}
+
+.box_tabela td:first-child {
+    text-align: left;
+    font-weight: bold;
+}
+
+.icone-trem {
+    margin-right: 8px;
+}
+
+.status-tabela {
+    font-weight: bold;
+}
+
+.status-tabela.normal {
+    color: #22c55e;
+}
+
+.status-tabela.atenção {
+    color: #ffae00;
+}
+
+.status-tabela.crítico {
+    color: #e00000;
+}
+
+.btn-ver {
+    margin-left: 15px;
+    padding: 3px 15px;
+
+    border-radius: 15px;
+    border: 1px solid #c9a993;
+
+    background: transparent;
+    color: #d8c0b0;
+
+    cursor: pointer;
+}

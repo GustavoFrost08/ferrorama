@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trens - TrainFerro</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/trens.css">
+</head>
+<body>
+
+    <header class="hdr">
+        <div>
+            <img src="../assets/logo.png" alt="Logo TrainFerro">
+        </div>
+
+        <nav class="tabelas-nav">
+            <a href="../html/dashboard.html" class="tab-btn">Home</a>
+            <a href="../html/trens.html" class="tab-btn ativo">Trens</a>
+            <a href="../html/sensores.html" class="tab-btn">Sensores</a>
+            <a href="../html/relatorios.html" class="tab-btn">Relatórios</a>
+            <a href="../html/usuarios.html" class="tab-btn">Usuários</a>
+        </nav>
+
+        <div>
+            <button class="btn-conta">Minha Conta</button>
+        </div>
+    </header>
+
+    <main class="box_maior">
+
+        <!-- lado esquerdo -->
+        <div class="container_esq">
+
+            <div class="titulo_pagina">
+                <h2>TRENS CADASTRADOS</h2>
+                <p>Lista de todos os trens cadastrados no sistema</p>
+            </div>
+            <div class="linha_cima">
+    <div class="frota">
+        <div class="img_status status-verde">
+            ✓
+        </div>
+        <div class="text_frota">
+            <span>Trens ativos</span>
+            <strong id="ativos">
+                0
+            </strong>
+            <small>
+                Em operação normal
+            </small>
+        </div>
+    </div>
+    <div class="frota">
+        <div class="img_status status-amarelo">
+            !
+        </div>
+        <div class="text_frota">
+            <span>Em manutenção</span>
+            <strong id="manutencao">
+                0
+            </strong>
+            <small>
+                Manutenções programadas
+            </small>
+        </div>
+    </div>
+    <div class="frota">
+        <div class="img_status status-vermelho">
+            X
+        </div>
+        <div class="text_frota">
+            <span>Parado</span>
+            <strong id="parados">
+                0
+            </strong>
+            <small>
+                Fora de operação
+            </small>
+        </div>
+    </div>
+</div>
+            <div class="container_baixo">
+                <p class="instrucao">Clique em cima do trem que deseja inspecionar</p>
+                <div class="box_tabela">
+    <table>
+        <thead>
+            <tr>
+                <th>Id do trem</th>
+                <th>Status</th>
+                <th>Localização atual</th>
+                <th>Velocidade</th>
+            </tr>
+        </thead>
+        <tbody id="tabelaTrens">
+        </tbody>
+    </table>
+</div>
+            </div>
+
+        </div> <!-- fim container_esq -->
+
+        <!-- lado direito -->
+        <div class="container_dir">
+            
+            <button class="btn_add_trem">+ Adicionar novo trem</button>
+
+            <div class="detalhes_trem_box">
+    <h4>
+        Detalhes do trem
+    </h4>
+    <p id="detalhesTrem">
+        Clique em um trem para visualizar os detalhes.
+    </p>
+
+</div>
+
+            <div class="historico_box">
+                <h4>Histórico recente</h4>
+                <a href="#">ver todos</a>
+            </div>
+
+        </div> <!-- fim container_dir -->
+
+    </main>
+
+    <script src="../js/trens.js"></script>
+</body>
+</html>

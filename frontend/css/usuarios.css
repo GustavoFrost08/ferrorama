@@ -1,0 +1,121 @@
+/* Cabeçalho da Página */
+.header_pagina {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.titulo_pagina h2 {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.titulo_pagina p {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+    margin-bottom: 0;
+}
+
+/* Botão: Adicionar Usuário */
+.btn_add_usuario {
+    background-color: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn_add_usuario:hover {
+    background-color: var(--bg-input);
+    color: var(--text-primary);
+    border-color: var(--text-primary);
+}
+
+.icon_user {
+    font-size: 1.1rem;
+}
+
+/* Reorganização da Linha de Cards */
+.linha_cima .frota {
+    min-width: 140px;
+}
+
+/* Container de Filtros */
+.box_filtros_usuarios {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.box_filtros_usuarios .input_busca,
+.box_filtros_usuarios select {
+    background-color: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.box_filtros_usuarios .input_busca {
+    flex: 2;
+    min-width: 220px;
+}
+
+.box_filtros_usuarios select {
+    flex: 1;
+    min-width: 120px;
+    cursor: pointer;
+}
+
+/* Botão Filtrar */
+.btn_filtrar {
+    background-color: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn_filtrar:hover {
+    background-color: var(--bg-input);
+    color: var(--text-primary);
+}
+
+/* Rodapé da Tabela e Paginação */
+.rodape_tabela {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.paginacao {
+    display: flex;
+    gap: 6px;
+}

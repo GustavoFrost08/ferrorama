@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="PT-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadastro TrainFerro</title>
+    <link rel="stylesheet" href="../css/cadastro.css" />
+  </head>
+  <body>
+    <main class="container">
+      <button
+        class="botao-voltar"
+        aria-label="Voltar"
+       onclick="window.location.href='/ferrorama/frontend/html/login.html'"
+
+        >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </button>
+
+      <header class="header">
+        <h1>Começe a usar o TrainFerro</h1>
+        <p>cadastre-se para uma melhor experiência</p>
+      </header>
+
+      <form class="form-cadastro" id="form-cadastro">
+        <div class="input-group">
+          <label for="user-contact">Número de celular ou email</label>
+          <input type="text" id="user-contact" required />
+        </div>
+
+        <div class="input-group">
+          <label for="password">Senha</label>
+          <input type="password" id="password" required />
+        </div>
+
+        <div class="dob-group">
+          <div class="dob-label-container">
+            <label>Data de Nascimento</label>
+            <span class="help-icon" title="Ajuda">?</span>
+          </div>
+          <div class="dob-selectors">
+            <select id="dob-day" required>
+              <option value="" disabled selected>Dia</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+              <option value="14">14</option>
+              <option value="15">15</option>
+              <option value="16">16</option>
+              <option value="17">17</option>
+              <option value="18">18</option>
+              <option value="19">19</option>
+              <option value="20">20</option>
+              <option value="21">21</option>
+              <option value="22">22</option>
+              <option value="23">23</option>
+              <option value="24">24</option>
+              <option value="25">25</option>
+              <option value="26">26</option>
+              <option value="27">27</option>
+              <option value="28">28</option>
+              <option value="29">29</option>
+              <option value="30">30</option>
+              <option value="31">31</option>
+            </select>
+            <select id="dob-month" required>
+              <option value="" disabled selected>Mês</option>
+              <option value="1">Janeiro</option>
+              <option value="2">Fevereiro</option>
+              <option value="3">Março</option>
+              <option value="4">Abril</option>
+              <option value="5">Maio</option>
+              <option value="6">Junho</option>
+              <option value="7">Julho</option>
+              <option value="8">Agosto</option>
+              <option value="9">Setembro</option>
+              <option value="10">Outubro</option>
+              <option value="11">Novembro</option>
+              <option value="12">Dezembro</option>
+            </select>
+            <select id="dob-year" required>
+              <option value="" disabled selected>Ano</option>
+              </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="first-name">Nome</label>
+          <input type="text" id="first-name" required />
+        </div>
+
+        <div class="input-group">
+          <label for="last-name">Sobrenome</label>
+          <input type="text" id="last-name" required />
+        </div>
+
+        <p class="terms-text">
+          Ao tocar em Enviar, você concorda em criar uma conta e em seguir os
+          <a href="#">Termos</a>, a <a href="#">Política de privacidade</a> e a
+          <a href="#">Política de cookies</a> do Trainferro.
+        </p>
+
+        <button type="submit" class="btn-submit">Enviar</button>
+
+        <button
+          type="button"
+          class="btn-login"
+         onclick="window.location.href='/ferrorama/frontend/html/login.html'"
+        >
+          Já tenho uma conta
+        </button>
+      </form>
+    </main>
+
+      <script src="../js/cadastro.js"></script>
+  </body>
+</html>

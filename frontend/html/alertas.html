@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alertas</title>
+    <link rel="stylesheet" href="../css/alertas.css">
+</head>
+
+<body>
+
+    <header class="hdr">
+
+        <div>
+            <img src="../assets/Logo.png" alt="Logo">
+        </div>
+
+        <nav class="tabelas-nav">
+            <a href="../html/dashboard.html" class="tab-btn">Home</a>
+            <a href="../html/trens.html" class="tab-btn">Trens</a>
+            <a href="../html/sensores.html" class="tab-btn">Sensores</a>
+            <a href="../html/relatorios.html" class="tab-btn">Relatórios</a>
+            <a href="../html/usuarios.html" class="tab-btn">Usuários</a>
+        </nav>
+
+        <div>
+            <button class="btn-conta">Minha Conta</button>
+        </div>
+
+    </header>
+
+    <main class="container">
+
+        <div class="cabecalho">
+            <div>
+                <h2>ALERTAS</h2>
+                <p>Todos os alertas registrados no sistema</p>
+            </div>
+
+            <a href="../html/dashboard.html" class="voltar">
+                Voltar
+            </a>
+        </div>
+
+        <div class="filtros">
+            <button class="filtro ativo" onclick="carregarAlertas('todos')">
+                Todos
+            </button>
+
+            <button class="filtro" onclick="carregarAlertas('critico')">
+                Críticos
+            </button>
+
+            <button class="filtro" onclick="carregarAlertas('alerta')">
+                Alertas
+            </button>
+        </div>
+
+        <div id="lista-alertas" class="lista-alertas">
+            <p>Carregando...</p>
+        </div>
+
+    </main>
+
+    <script src="../js/alertas.js"></script>
+
+</body>
+</html>

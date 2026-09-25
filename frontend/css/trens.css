@@ -1,0 +1,195 @@
+/* Título e Subtítulo da Página*/
+.titulo_pagina h2 {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.titulo_pagina p {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+    margin-bottom: 15px;
+}
+
+/* Instrução acima da tabela */
+.instrucao {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+}
+
+/* Botão: Adicionar Novo Trem */
+.btn_add_trem {
+    background-color: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.95rem;
+    cursor: pointer;
+    width: 100%;
+    transition: opacity 0.2s;
+}
+
+.btn_add_trem:hover {
+    opacity: 0.9;
+}
+
+/* Card: Detalhes do Trem Selecionado */
+.detalhes_trem_box {
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    padding: 18px;
+    min-height: 200px;
+}
+
+/* Card: Histórico Recente */
+.historico_box {
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    padding: 18px;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+}
+
+.historico_box h4 {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.historico_box a {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    text-decoration: none;
+    margin-left: auto;
+    margin-bottom: 15px;
+    opacity: 0.8;
+}
+
+.historico_box a:hover {
+    text-decoration: underline;
+}
+
+/* CARDS DOS TRENS */
+
+.linha_cima {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.frota {
+    background-color: var(--bg-card);
+
+    border-radius: 10px;
+
+    padding: 18px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    flex: 1;
+}
+
+.img_status {
+    width: 55px;
+    height: 55px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 35px;
+    font-weight: bold;
+
+    color: white;
+}
+
+.status-verde {
+    background-color: #22c55e;
+}
+
+.status-amarelo {
+    background-color: #d4a017;
+}
+
+.status-vermelho {
+    background-color: #e63946;
+}
+
+.text_frota {
+    display: flex;
+    flex-direction: column;
+}
+
+.text_frota span {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.text_frota strong {
+    font-size: 2rem;
+}
+
+.text_frota small {
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+
+/* TABELA */
+
+.box_tabela {
+    overflow-y: auto;
+}
+
+.box_tabela table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.box_tabela th,
+.box_tabela td {
+    padding: 8px 10px;
+
+    border: 1px solid var(--text-secondary);
+
+    text-align: left;
+
+    color: var(--text-secondary);
+}
+
+.box_tabela th {
+    font-weight: bold;
+}
+
+.box_tabela tbody tr {
+    cursor: pointer;
+}
+
+.box_tabela tbody tr:hover {
+    background-color: rgba(255,255,255,0.05);
+}
+
+
+/* DETALHES */
+
+.detalhes_trem_box h4 {
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+}
+
+.detalhes_trem_box p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+}

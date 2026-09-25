@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensores - TrainFerro</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/sensores.css">
+</head>
+<body>
+
+    <header class="hdr">
+        <div>
+            <img src="../assets/logo.png" alt="Logo TrainFerro">
+        </div>
+
+        <nav class="tabelas-nav">
+            <a href="../html/dashboard.html" class="tab-btn">Home</a>
+            <a href="../html/trens.html" class="tab-btn">Trens</a>
+            <a href="../html/sensores.html" class="tab-btn ativo">Sensores</a>
+            <a href="../html/relatorios.html" class="tab-btn">Relatórios</a>
+            <a href="../html/usuarios.html" class="tab-btn">Usuários</a>
+        </nav>
+
+        <div>
+            <button class="btn-conta">Minha Conta</button>
+        </div>
+    </header>
+    <main class="box_maior">
+        <!-- LADO ESQUERDO -->
+        <div class="container_esq">
+            <!--Cards de Status dos Sensores-->
+            <div class="linha_cima">
+    <!-- TOTAL -->
+    <div class="frota">
+        <div class="img_status status-cinza">
+            ◉
+        </div>
+        <div class="text_frota">
+            <span>Total de sensores</span>
+            <strong id="totalSensores">
+                0
+            </strong>
+            <small>
+                Cadastrados
+            </small>
+        </div>
+    </div>
+    <!-- NORMAIS -->
+    <div class="frota">
+        <div class="img_status status-verde">
+            ✓
+        </div>
+        <div class="text_frota">
+            <span>Sensores normais</span>
+            <strong id="sensoresNormais">
+                0
+            </strong>
+            <small id="porcentagemNormal">
+                0% do total
+            </small>
+        </div>
+    </div>
+    <!-- ALERTA -->
+    <div class="frota">
+        <div class="img_status status-amarelo">
+            !
+        </div>
+        <div class="text_frota">
+            <span>Sensores em alerta</span>
+            <strong id="sensoresAlerta">
+                0
+            </strong>
+            <small id="porcentagemAlerta">
+                0% do total
+            </small>
+        </div>
+    </div>
+    <!-- CRÍTICOS -->
+    <div class="frota">
+        <div class="img_status status-vermelho">
+            X
+        </div>
+        <div class="text_frota">
+            <span>Sensores críticos</span>
+            <strong id="sensoresCriticos">
+                0
+            </strong>
+            <small id="porcentagemCritico">
+                0% do total
+            </small>
+        </div>
+    </div>
+</div>
+
+            <!--grafico de leitura dos sensores-->
+            <div class="grafico_box">
+                <div class="grafico_header">
+                    <h2>LEITURA DOS SENSORES <span>(Últimas 24h)</span></h2>
+                    
+                    <div class="grafico_controles">
+                        <div class="legenda">
+                            <span class="ponto temp"></span> Temperatura
+                            <span class="ponto vib"></span> Vibração
+                            <span class="ponto vel"></span> Velocidade
+                        </div>
+                        <select class="select_tipo">
+                            <option value="todos">Todos os tipos</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="area_grafico">
+
+    <canvas id="graficoSensores"></canvas>
+
+</div>
+            </div>
+
+            <!--tabela com filtros de pesquisa-->
+            <div class="container_baixo">
+                
+                <div class="tabela_header_filtros">
+                    <h2>TODOS OS SENSORES</h2>
+
+                    <div class="box_filtros">
+                        <input
+    type="text"
+    placeholder="Buscar por ID do sensor..."
+    class="input_busca"
+    id="buscaSensor"
+>
+<select id="filtroTipo">
+    <option value="todos">
+        Todos os tipos
+    </option>
+    <option value="temperatura">
+        Temperatura
+    </option>
+    <option value="vibracao">
+        Vibração
+    </option>
+    <option value="velocidade">
+        Velocidade
+    </option>
+    <option value="pressao">
+        Pressão
+    </option>
+</select>
+<select id="filtroTrem">
+    <option value="todos">
+        Todos os trens
+    </option>
+</select>
+<select id="filtroStatus">
+    <option value="todos">
+        Todos os status
+    </option>
+    <option value="normal">
+        Normal
+    </option>
+    <option value="alerta">
+        Alerta
+    </option>
+    <option value="critico">
+        Crítico
+    </option>
+</select>
+                    </div>
+                </div>
+                <div class="box_tabela">
+    <table>
+        <thead>
+            <tr>
+                <th>ID DO SENSOR</th>
+                <th>TIPO</th>
+                <th>TREM VINCULADO</th>
+                <th>ÚLTIMA LEITURA</th>
+                <th>INTERVALO ESPERADO</th>
+                <th>STATUS</th>
+                <th>ÚLTIMA ATUALIZAÇÃO</th>
+            </tr>
+        </thead>
+        <tbody id="tabelaSensores">
+        </tbody>
+    </table>
+</div>
+
+            </div>
+
+        </div> <!--fim container_esq-->
+
+        <!--lado direito-->
+        <div class="container_dir">
+            
+            <div class="alerta_box">
+                <h4>ALERTAS EM TEMPO REAL</h4>
+                <a href="#">ver todos</a>
+
+                <div class="lista_alertas" id="listaAlertas">
+
+</div>
+            </div>
+
+        </div> <!--fim container_dir-->
+
+    </main>
+
+    <script src="../js/sensores.js"></script>
+</body>
+</html>

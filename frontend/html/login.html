@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FerroTrain - Login</title>
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="esquerda">
+
+            <div class="logo">
+                <img src="../assets/logo.png" alt="Logo">
+            </div>
+
+            <div class="content">
+
+                <h1>
+                    Planeje sua viagem e acompanhe<br>
+                    cada parada em <span>tempo real.</span>
+                </h1>
+
+                <div class="banner-img">
+                    <img src="../assets/App.png" alt="Aplicativo Trainferro">
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="direita">
+
+            <div class="login-box">
+
+                <h2>Entrar no Trainferro</h2>
+
+                <div class="input-login">
+                    <input
+                        type="text"
+                        id="usuario"
+                        placeholder="Telefone ou email..."
+                    >
+                </div>
+
+                <div class="input-login">
+                    <input
+                        type="password"
+                        id="senha"
+                        placeholder="Senha..."
+                    >
+                </div>
+
+                <button class="login-btn" type="button">
+                      Entrar
+                     </button>
+
+                <p class="esqueceu">Esqueceu a senha?</p>
+
+                <button class="social-btn" onclick="fazerLoginFacebook()">
+                    <span class="facebook">f</span>
+                    Entrar com o Facebook
+                </button>
+
+                <a href="../html/cadastro.html" style="text-decoration: none; display: block; width: 100%;">
+                    <button class="registro-btn">Criar nova conta</button>
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        function fazerLoginFacebook() {
+           
+            const clienteId = "SEU_APP_ID_AQUI"; 
+            const redirecionarPara = window.location.href; 
+            const urlFacebook = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${clienteId}&redirect_uri=${encodeURIComponent(redirecionarPara)}&response_type=token&scope=email,public_profile`;
+
+           
+            const largura = 600;
+            const altura = 500;
+            const esquerda = (screen.width - largura) / 2;
+            const topo = (screen.height - altura) / 2;
+
+            window.open(
+                urlFacebook, 
+                "FacebookLogin", 
+                `width=${largura},height=${altura},top=${topo},left=${esquerda},scrollbars=yes,resizable=yes`
+            );
+        }
+    </script>
+
+    <script src="../js/login.js"></script>
+
+</body>
+</html>

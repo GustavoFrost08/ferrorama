@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios - TrainFerro</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/relatorios.css">
+</head>
+<body>
+
+    <header class="hdr">
+        <div>
+            <img src="../assets/logo.png" alt="Logo TrainFerro">
+        </div>
+
+        <nav class="tabelas-nav">
+            <a href="../html/dashboard.html" class="tab-btn">Home</a>
+            <a href="../html/trens.html" class="tab-btn">Trens</a>
+            <a href="../html/sensores.html" class="tab-btn">Sensores</a>
+            <a href="../html/relatorios.html" class="tab-btn ativo">Relatórios</a>
+            <a href="../html/usuarios.html" class="tab-btn">Usuários</a>
+        </nav>
+
+        <div>
+            <button class="btn-conta">Minha Conta</button>
+        </div>
+    </header>
+
+    <!-- parte esq -->
+    <main class="box_maior">
+
+        <div class="container_esq">
+
+            <!-- filtros superiores -->
+            <div class="filtros_topo">
+                <input type="text" value="01/05/2026 → 12/05/2026" class="input_data" readonly>
+                <select class="select_filtro">
+                    <option value="trem">Por trem</option>
+                </select>
+                <select class="select_filtro">
+                    <option value="todos">Todos os trens</option>
+                </select>
+            </div>
+
+            <!-- cards de status + botao de gerar relatorio -->
+            <div class="linha_cima">
+                <div class="frota">
+                    <div class="img_status"><img src="" alt=""></div>
+                    <div class="text_frota"></div>
+                </div>
+                <div class="frota">
+                    <div class="img_status"><img src="" alt=""></div>
+                    <div class="text_frota"></div>
+                </div>
+                <div class="frota">
+                    <div class="img_status"><img src="" alt=""></div>
+                    <div class="text_frota"></div>
+                </div>
+                <div class="frota">
+                    <div class="img_status"><img src="" alt=""></div>
+                    <div class="text_frota"></div>
+                </div>
+
+                <button class="btn_gerar_relatorio">
+                    <span class="icon_relatorio">📄</span> 
+                    GERAR RELATÓRIO
+                </button>
+            </div>
+
+            <!-- grafico de ocorrencias + grafico de rosca -->
+            <div class="linha_graficos">
+                
+                <!-- gráfico de linha -->
+                <div class="grafico_box_linha">
+                    <div class="grafico_header">
+                        <h2>OCORRÊNCIAS POR DIA <span>(Últimas 24h)</span></h2>
+                    </div>
+                    <div class="area_grafico_linha">
+                        <!-- espaço reservado para inserção do gráfico e legenda -->
+                    </div>
+                </div>
+
+                <!-- gráfico de rosca -->
+                <div class="grafico_box_rosca">
+                    <h2>OCORRÊNCIAS POR TIPO</h2>
+                    <div class="area_grafico_rosca">
+                        <!-- espaço reservado para inserção do gráfico -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- tabela de resumo e filtros de busca -->
+            <div class="container_baixo">
+                <div class="tabela_header_filtros">
+                    <h2>TODOS OS SENSORES</h2>
+
+                    <div class="box_filtros">
+                        <input type="text" placeholder="Buscar por ID do sensor..." class="input_busca">
+                        <select><option>Todos os tipos</option></select>
+                        <select><option>Todos os trens</option></select>
+                        <select><option>Todos os status</option></select>
+                    </div>
+                </div>
+
+                <div class="box_tabela">
+                    <table>
+                        <!-- tabela preenchida futuramente -->
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script src="../js/relatorios.js"></script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+/* Reset de estilos básicos */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:root {
+  --bg-main: #3d2514;
+  --bg-card: #4e321b;
+  --bg-input: #412816;
+  --border-color: #a38c7a;
+  --text-primary: #ffffff;
+  --text-secondary: #d9cdb8;
+  --btn-primary-bg: #ecd7c6;
+  --btn-primary-text: #4e321b;
+  --link-color: #38bdf8;
+}
+
+body {
+  background-color: var(--bg-main);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* container centralizado */
+.container {
+  background-color: var(--bg-card);
+  width: 100%;
+  max-width: 500px;
+  padding: 40px 30px;
+  border-radius: 4px;
+  position: relative;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* botão voltar */
+.botao-voltar {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 25px;
+  transition: background-color 0.2s;
+}
+
+.botao-voltar:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* cabeçalho */
+.header h1 {
+  color: var(--text-primary);
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.header p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+/* formulário e espaçamentos */
+.form-cadastro {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+label {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* inputs e selects padronizados */
+input[type="text"],
+input[type="password"],
+select {
+  background-color: var(--bg-input);
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-primary);
+  padding: 14px 16px;
+  font-size: 16px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--text-primary);
+}
+
+/* data de nascimento */
+.dob-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dob-label-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.help-icon {
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 11px;
+  cursor: help;
+}
+
+.dob-selectors {
+  display: flex;
+  gap: 12px;
+}
+
+.dob-selectors select {
+  flex: 1;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 35px;
+}
+
+/* texto de termos e links */
+.terms-text {
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: left;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.terms-text a {
+  color: var(--link-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.terms-text a:hover {
+  text-decoration: underline;
+}
+
+/* botões */
+.btn-submit {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: none;
+  border-radius: 25px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-submit:hover {
+  opacity: 0.9;
+}
+
+.btn-login {
+  background: none;
+  border: 1.5px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: 25px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.btn-login:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}

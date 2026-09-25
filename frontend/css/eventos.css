@@ -1,0 +1,57 @@
+.pagina-eventos {
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    padding: 25px;
+    margin-top: 20px;
+}
+
+.cabecalho-eventos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.cabecalho-eventos h2 {
+    margin: 0;
+}
+
+.voltar {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.8rem;
+}
+
+.voltar:hover {
+    text-decoration: underline;
+}
+
+#todos-eventos {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.evento-completo {
+    border: 1px solid var(--border-color);
+    border-radius: 9px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.evento-completo strong {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.evento-completo span {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.evento-data {
+    font-size: 0.7rem !important;
+    opacity: 0.8;
+}
