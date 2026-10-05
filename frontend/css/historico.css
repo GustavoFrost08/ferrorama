@@ -1,0 +1,69 @@
+/* Caixa grande que guarda a página toda */
+.pagina_hist {
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    padding: 25px;
+    margin-top: 20px;
+}
+
+/* Título à esquerda e "voltar" à direita */
+.hist_topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.hist_topo h2 {
+    margin: 0;
+}
+
+.hist_voltar {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.8rem;
+}
+
+.hist_voltar:hover {
+    text-decoration: underline;
+}
+
+/* Lista de eventos, um embaixo do outro */
+#lista-historico {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Cada cartão de evento */
+.hist_item {
+    border: 1px solid var(--border-color);
+    border-radius: 9px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.hist_titulo {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.hist_desc {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+/* linha de baixo: Trem + data e hora */
+.hist_info {
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    opacity: 0.8;
+}
+
+.hist_vazio {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}

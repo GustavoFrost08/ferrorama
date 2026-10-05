@@ -1,114 +1,80 @@
 <?php
 
-$conn = new mysqli("localhost", "root", "", "ferrorama");
+header("Content-Type: application/json; charset=UTF-8");
+require_once "conexao.php";
 
-if ($conn->connect_error) {
-    die("Erro na conexão");
+$sql = "SELECT sensores.id,sensores.codigo,sensores.tipo,sensores.trem_id,sensores.unidade,
+sensores.limite_min,sensores.limite_max,sensores.ultima_leitura,sensores.status,
+sensores.atualizado_em,trens.codigo AS trem_codigo
+FROM sensores INNER JOIN trens ON sensores.trem_id=trens.id ORDER BY sensores.id";
+
+$resultado=$conn->query($sql);
+
+if(!$resultado){
+    echo json_encode(["erro"=>true,"mensagem"=>"Erro ao buscar sensores: ".$conn->error]);
+    exit;
 }
 
-$conn->set_charset("utf8mb4");
+$sensores=[];
+while($sensor=$resultado->fetch_assoc())$sensores[]=$sensor;
 
 
-/* =========================
-   SENSORES
-========================= */
+$sql_alertas="SELECT alertas.id,alertas.titulo,alertas.descricao,alertas.gravidade,
+alertas.criado_em,sensores.codigo AS sensor_codigo,sensores.tipo,
+sensores.ultima_leitura,sensores.unidade,trens.codigo AS trem_codigo
+FROM alertas
+LEFT JOIN sensores ON alertas.sensor_id=sensores.id
+INNER JOIN trens ON alertas.trem_id=trens.id
+WHERE alertas.resolvido=0 ORDER BY alertas.criado_em DESC";
 
-$sql = "
-    SELECT 
-        sensores.id,
-        sensores.codigo,
-        sensores.tipo,
-        sensores.trem_id,
-        sensores.unidade,
-        sensores.limite_min,
-        sensores.limite_max,
-        sensores.ultima_leitura,
-        sensores.status,
-        sensores.atualizado_em,
-        trens.codigo AS trem_codigo
-    FROM sensores
-    INNER JOIN trens ON sensores.trem_id = trens.id
-    ORDER BY sensores.id
-";
+$resultado_alertas=$conn->query($sql_alertas);
 
-$resultado = $conn->query($sql);
-
-$sensores = [];
-
-while ($sensor = $resultado->fetch_assoc()) {
-    $sensores[] = $sensor;
+if(!$resultado_alertas){
+    echo json_encode(["erro"=>true,"mensagem"=>"Erro ao buscar alertas: ".$conn->error]);
+    exit;
 }
 
+$alertas=[];
+while($alerta=$resultado_alertas->fetch_assoc())$alertas[]=$alerta;
 
-/* =========================
-   ALERTAS
-========================= */
 
-$sql_alertas = "
-    SELECT
-        alertas.id,
-        alertas.titulo,
-        alertas.descricao,
-        alertas.gravidade,
-        alertas.criado_em,
-        sensores.codigo AS sensor_codigo,
-        sensores.tipo,
-        sensores.ultima_leitura,
-        sensores.unidade,
-        trens.codigo AS trem_codigo
-    FROM alertas
-    LEFT JOIN sensores ON alertas.sensor_id = sensores.id
-    INNER JOIN trens ON alertas.trem_id = trens.id
-    WHERE alertas.resolvido = 0
-    ORDER BY alertas.criado_em DESC
-";
+$sql_leituras="SELECT leituras.sensor_id,sensores.codigo,sensores.tipo,
+sensores.unidade,leituras.valor,leituras.lida_em
+FROM leituras INNER JOIN sensores ON leituras.sensor_id=sensores.id
+ORDER BY leituras.lida_em DESC LIMIT 100";
 
-$resultado_alertas = $conn->query($sql_alertas);
+$resultado_leituras=$conn->query($sql_leituras);
 
-$alertas = [];
-
-while ($alerta = $resultado_alertas->fetch_assoc()) {
-    $alertas[] = $alerta;
+if(!$resultado_leituras){
+    echo json_encode(["erro"=>true,"mensagem"=>"Erro ao buscar leituras: ".$conn->error]);
+    exit;
 }
 
+$leituras=[];
+while($leitura=$resultado_leituras->fetch_assoc())$leituras[]=$leitura;
 
-/* =========================
-   LEITURAS PARA O GRÁFICO
-========================= */
+$leituras=array_reverse($leituras);
 
-$sql_leituras = "
-    SELECT
-        leituras.sensor_id,
-        sensores.codigo,
-        sensores.tipo,
-        sensores.unidade,
-        leituras.valor,
-        leituras.lida_em
-    FROM leituras
-    INNER JOIN sensores ON leituras.sensor_id = sensores.id
-    WHERE leituras.lida_em >= NOW() - INTERVAL 24 HOUR
-    ORDER BY leituras.lida_em
-";
 
-$resultado_leituras = $conn->query($sql_leituras);
+$sql_trens="SELECT id,codigo FROM trens ORDER BY codigo";
+$resultado_trens=$conn->query($sql_trens);
 
-$leituras = [];
-
-while ($leitura = $resultado_leituras->fetch_assoc()) {
-    $leituras[] = $leitura;
+if(!$resultado_trens){
+    echo json_encode(["erro"=>true,"mensagem"=>"Erro ao buscar trens: ".$conn->error]);
+    exit;
 }
 
+$trens=[];
+while($trem=$resultado_trens->fetch_assoc())$trens[]=$trem;
 
-/* =========================
-   RETORNO
-========================= */
 
 echo json_encode([
-    "sensores" => $sensores,
-    "alertas" => $alertas,
-    "leituras" => $leituras
+    "erro"=>false,
+    "sensores"=>$sensores,
+    "alertas"=>$alertas,
+    "leituras"=>$leituras,
+    "trens"=>$trens
 ]);
 
 $conn->close();
-
 ?>

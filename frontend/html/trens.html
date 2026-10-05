@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trens - TrainFerro</title>
     <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="stylesheet" href="../css/trens.css">
+    <link rel="stylesheet" href="../css/trens.css?v=2">
 </head>
 <body>
 
@@ -36,94 +36,131 @@
                 <h2>TRENS CADASTRADOS</h2>
                 <p>Lista de todos os trens cadastrados no sistema</p>
             </div>
+
             <div class="linha_cima">
-    <div class="frota">
-        <div class="img_status status-verde">
-            ✓
-        </div>
-        <div class="text_frota">
-            <span>Trens ativos</span>
-            <strong id="ativos">
-                0
-            </strong>
-            <small>
-                Em operação normal
-            </small>
-        </div>
-    </div>
-    <div class="frota">
-        <div class="img_status status-amarelo">
-            !
-        </div>
-        <div class="text_frota">
-            <span>Em manutenção</span>
-            <strong id="manutencao">
-                0
-            </strong>
-            <small>
-                Manutenções programadas
-            </small>
-        </div>
-    </div>
-    <div class="frota">
-        <div class="img_status status-vermelho">
-            X
-        </div>
-        <div class="text_frota">
-            <span>Parado</span>
-            <strong id="parados">
-                0
-            </strong>
-            <small>
-                Fora de operação
-            </small>
-        </div>
-    </div>
-</div>
+                <div class="frota">
+                    <div class="img_status status-verde">✓</div>
+                    <div class="text_frota">
+                        <span>Trens ativos</span>
+                        <strong id="ativos">0</strong>
+                        <small>Em operação normal</small>
+                    </div>
+                </div>
+
+                <div class="frota">
+                    <div class="img_status status-amarelo">!</div>
+                    <div class="text_frota">
+                        <span>Em manutenção</span>
+                        <strong id="manutencao">0</strong>
+                        <small>Manutenções programadas</small>
+                    </div>
+                </div>
+
+                <div class="frota">
+                    <div class="img_status status-vermelho">X</div>
+                    <div class="text_frota">
+                        <span>Parado</span>
+                        <strong id="parados">0</strong>
+                        <small>Fora de operação</small>
+                    </div>
+                </div>
+            </div>
+
             <div class="container_baixo">
                 <p class="instrucao">Clique em cima do trem que deseja inspecionar</p>
                 <div class="box_tabela">
-    <table>
-        <thead>
-            <tr>
-                <th>Id do trem</th>
-                <th>Status</th>
-                <th>Localização atual</th>
-                <th>Velocidade</th>
-            </tr>
-        </thead>
-        <tbody id="tabelaTrens">
-        </tbody>
-    </table>
-</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Id do trem</th>
+                                <th>Status</th>
+                                <th>Localização atual</th>
+                                <th>Velocidade</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaTrens">
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </div> <!-- fim container_esq -->
 
         <!-- lado direito -->
         <div class="container_dir">
-            
-            <button class="btn_add_trem">+ Adicionar novo trem</button>
+
+            <button class="btn_add_trem" id="btnAbrir">+ Adicionar novo trem</button>
 
             <div class="detalhes_trem_box">
-    <h4>
-        Detalhes do trem
-    </h4>
-    <p id="detalhesTrem">
-        Clique em um trem para visualizar os detalhes.
-    </p>
-
-</div>
-
-            <div class="historico_box">
-                <h4>Histórico recente</h4>
-                <a href="#">ver todos</a>
+                <h4>Detalhes do trem</h4>
+                <p id="detalhesTrem">
+                    Clique em um trem para visualizar os detalhes.
+                </p>
             </div>
+
+          <div class="historico_box">
+        <h4>Histórico recente</h4>
+        <a href="../html/historico.html">ver todos</a>
+        <div id="lista-eventos"></div>
+        </div>
 
         </div> <!-- fim container_dir -->
 
     </main>
 
-    <script src="../js/trens.js"></script>
+    <!-- Janela Novo Trem -->
+    <div class="modal_fundo" id="modalTrem">
+        <div class="modal_caixa">
+            <button class="modal_fechar" id="btnFechar" type="button">✕</button>
+            <h3>Novo Trem</h3>
+
+            <form id="formTrem">
+                <div class="modal_colunas">
+
+                    <!-- coluna da esquerda -->
+                    <div class="modal_coluna">
+                        <label>Data de cadastro</label>
+                        <input type="date" name="data_cadastro" required>
+
+                        <label>Velocidade atual (km/h)</label>
+                        <input type="number" name="velocidade" min="0" value="0" required>
+
+                        <label>Status</label>
+                        <select name="status" required>
+                            <option value="">Selecionar...</option>
+                            <option value="em_manutencao">Em Manutenção</option>
+                            <option value="parado">Parado</option>
+                            <option value="em_operacao">Em Operação</option>
+                        </select>
+                    </div>
+
+                    <!-- coluna da direita -->
+                    <div class="modal_coluna">
+                        <label>Número de Série</label>
+                        <input type="text" name="numero_serie" required>
+
+                        <label>Modelo do Trem</label>
+                        <input type="text" name="modelo" required>
+
+                        <label>Linha do Trem</label>
+                        <select name="linha" required>
+                            <option value="">Selecionar...</option>
+                            <option value="Linha Norte">Norte</option>
+                            <option value="Linha Sul">Sul</option>
+                            <option value="Linha Expresso">Expresso</option>
+                        </select>
+
+                        <label>Localização Atual</label>
+                        <input type="text" name="localizacao" required>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn_add_trem">+ Adicionar Trem</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/trens.js?v=3"></script>
 </body>
 </html>

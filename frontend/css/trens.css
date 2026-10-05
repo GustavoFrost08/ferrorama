@@ -86,32 +86,23 @@
 
 .frota {
     background-color: var(--bg-card);
-
     border-radius: 10px;
-
     padding: 18px;
-
     display: flex;
     align-items: center;
-
     gap: 15px;
-
     flex: 1;
 }
 
 .img_status {
     width: 55px;
     height: 55px;
-
     border-radius: 50%;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     font-size: 35px;
     font-weight: bold;
-
     color: white;
 }
 
@@ -150,6 +141,7 @@
 /* TABELA */
 
 .box_tabela {
+    height: 420px;      /* altura fixa: se tiver mais trens, aparece a barra de rolagem */
     overflow-y: auto;
 }
 
@@ -161,16 +153,17 @@
 .box_tabela th,
 .box_tabela td {
     padding: 8px 10px;
-
     border: 1px solid var(--text-secondary);
-
     text-align: left;
-
     color: var(--text-secondary);
 }
 
+/* cabeçalho fica fixo no topo enquanto a tabela rola */
 .box_tabela th {
     font-weight: bold;
+    position: sticky;
+    top: 0;
+    background-color: var(--bg-card);
 }
 
 .box_tabela tbody tr {
@@ -178,7 +171,13 @@
 }
 
 .box_tabela tbody tr:hover {
-    background-color: rgba(255,255,255,0.05);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.box_tabela .status-em_operacao,
+.box_tabela .status-em_manutencao,
+.box_tabela .status-parado {
+    font-weight: bold;
 }
 
 
@@ -192,4 +191,84 @@
 .detalhes_trem_box p {
     color: var(--text-secondary);
     line-height: 1.7;
+}
+
+
+/* ===== JANELA "NOVO TREM" ===== */
+
+/* fundo escuro que cobre a tela toda (começa escondido) */
+.modal_fundo {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* quando o JavaScript adiciona a classe "aberto", ele aparece */
+.modal_fundo.aberto {
+    display: flex;
+}
+
+.modal_caixa {
+    position: relative;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 30px;
+    width: 650px;
+    max-width: 95%;
+}
+
+.modal_caixa h3 {
+    text-align: center;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+}
+
+.modal_fechar {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+/* duas colunas lado a lado */
+.modal_colunas {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.modal_coluna {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal_coluna label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+    margin-top: 12px;
+}
+
+.modal_coluna input,
+.modal_coluna select {
+    background-color: var(--bg-input);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 8px;
+    width: 100%;
+    color-scheme: dark; /* deixa o calendário escuro */
 }

@@ -21,6 +21,12 @@ select {
     outline: none;
 }
 
+/* campo de data com calendário claro no tema escuro */
+input[type="date"] {
+    color-scheme: dark;
+    font-family: inherit;
+}
+
 
 /* =========================================
    CARDS
@@ -132,6 +138,11 @@ select {
     gap: 10px;
 
     cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn_gerar_relatorio:hover {
+    background-color: rgba(255, 255, 255, 0.08);
 }
 
 .icon_relatorio {
@@ -140,7 +151,7 @@ select {
 
 
 /* =========================================
-   GRÁFICOS
+   GRÁFICOS (desenhados pelo Chart.js)
 ========================================= */
 
 .linha_graficos {
@@ -151,6 +162,7 @@ select {
 
 .grafico_box_linha {
     flex: 2;
+    min-width: 0;              /* evita o canvas estourar o flex */
     background-color: var(--bg-card);
     border-radius: 8px;
     padding: 15px;
@@ -158,6 +170,7 @@ select {
 
 .grafico_box_rosca {
     flex: 1;
+    min-width: 0;
     background-color: var(--bg-card);
     border-radius: 8px;
     padding: 15px;
@@ -176,130 +189,17 @@ select {
     margin: 0;
 }
 
-.grafico_header span {
-    font-size: 0.7rem;
-    font-weight: normal;
-    opacity: 0.7;
-}
-
-.area_grafico_linha {
+/* o container precisa de position: relative e altura fixa
+   para o Chart.js se ajustar ao tamanho */
+.area_grafico_linha,
+.area_grafico_rosca {
+    position: relative;
     width: 100%;
     height: 200px;
 }
-
-#graficoOcorrencias {
-    width: 100%;
-    height: 185px;
-}
-
-.grafico_legenda {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    font-size: 0.6rem;
-    margin-bottom: 2px;
-}
-
-.grafico_legenda span {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.leg {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    display: inline-block;
-}
-
-.trem01 {
-    background: #f97316;
-}
-
-.trem02 {
-    background: #22c55e;
-}
-
-.trem03 {
-    background: #3b82f6;
-}
-
-
-/* =========================================
-   GRÁFICO ROSCA
-========================================= */
 
 .area_grafico_rosca {
-    height: 200px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.rosca-container {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.rosca {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-
-    background:
-        conic-gradient(
-            #e00000 0deg 162deg,
-            #ff8c00 162deg 270deg,
-            #299b18 270deg 360deg
-        );
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.rosca-centro {
-    width: 82px;
-    height: 82px;
-    border-radius: 50%;
-    background: var(--bg-card);
-}
-
-.rosca-legenda {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    font-size: 0.65rem;
-}
-
-.rosca-legenda div {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.rosca-legenda strong {
-    margin-left: 3px;
-}
-
-.quadrado {
-    width: 8px;
-    height: 8px;
-    display: inline-block;
-}
-
-.quadrado.critico {
-    background: #e00000;
-}
-
-.quadrado.alerta {
-    background: #ff8c00;
-}
-
-.quadrado.normal {
-    background: #299b18;
+    margin-top: 5px;
 }
 
 
@@ -337,6 +237,8 @@ select {
 
 .box_tabela {
     width: 100%;
+    max-height: 230px;
+    overflow-y: auto;
 }
 
 .box_tabela table {
@@ -346,6 +248,9 @@ select {
 }
 
 .box_tabela th {
+    position: sticky;
+    top: 0;
+    background-color: var(--bg-card);
     color: #d8c0b0;
     font-weight: bold;
     padding: 8px;
@@ -372,15 +277,16 @@ select {
     font-weight: bold;
 }
 
+/* classes sem acento (o JS gera "normal", "atencao", "critico") */
 .status-tabela.normal {
     color: #22c55e;
 }
 
-.status-tabela.atenção {
+.status-tabela.atencao {
     color: #ffae00;
 }
 
-.status-tabela.crítico {
+.status-tabela.critico {
     color: #e00000;
 }
 
@@ -395,4 +301,9 @@ select {
     color: #d8c0b0;
 
     cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-ver:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }

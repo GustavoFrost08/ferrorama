@@ -27,57 +27,57 @@
         </div>
     </header>
 
-    <!-- parte esq -->
     <main class="box_maior">
 
         <div class="container_esq">
 
             <!-- filtros superiores -->
             <div class="filtros_topo">
-                <input type="text" value="01/05/2026 → 12/05/2026" class="input_data" readonly>
+                <input type="date" id="dataInicio" class="input_data">
+                <input type="date" id="dataFim" class="input_data">
                 <select class="select_filtro">
                     <option value="trem">Por trem</option>
                 </select>
-                <select class="select_filtro">
+                <select class="select_filtro" id="filtroTrem">
                     <option value="todos">Todos os trens</option>
                 </select>
             </div>
 
-            <!-- cards de status + botao de gerar relatorio -->
+            <!-- cards de status + botão de gerar relatório -->
             <div class="linha_cima">
                 <div class="frota">
-                    <div class="img_status"><img src="" alt=""></div>
+                    <div class="img_status"></div>
                     <div class="text_frota"></div>
                 </div>
                 <div class="frota">
-                    <div class="img_status"><img src="" alt=""></div>
+                    <div class="img_status"></div>
                     <div class="text_frota"></div>
                 </div>
                 <div class="frota">
-                    <div class="img_status"><img src="" alt=""></div>
+                    <div class="img_status"></div>
                     <div class="text_frota"></div>
                 </div>
                 <div class="frota">
-                    <div class="img_status"><img src="" alt=""></div>
+                    <div class="img_status"></div>
                     <div class="text_frota"></div>
                 </div>
 
                 <button class="btn_gerar_relatorio">
-                    <span class="icon_relatorio">📄</span> 
+                    <span class="icon_relatorio">📄</span>
                     GERAR RELATÓRIO
                 </button>
             </div>
 
-            <!-- grafico de ocorrencias + grafico de rosca -->
+            <!-- gráfico de ocorrências + gráfico de rosca -->
             <div class="linha_graficos">
-                
+
                 <!-- gráfico de linha -->
                 <div class="grafico_box_linha">
                     <div class="grafico_header">
-                        <h2>OCORRÊNCIAS POR DIA <span>(Últimas 24h)</span></h2>
+                        <h2>OCORRÊNCIAS POR DIA</h2>
                     </div>
                     <div class="area_grafico_linha">
-                        <!-- espaço reservado para inserção do gráfico e legenda -->
+                        <canvas id="graficoOcorrencias"></canvas>
                     </div>
                 </div>
 
@@ -85,7 +85,7 @@
                 <div class="grafico_box_rosca">
                     <h2>OCORRÊNCIAS POR TIPO</h2>
                     <div class="area_grafico_rosca">
-                        <!-- espaço reservado para inserção do gráfico -->
+                        <canvas id="graficoRosca"></canvas>
                     </div>
                 </div>
 
@@ -97,16 +97,22 @@
                     <h2>TODOS OS SENSORES</h2>
 
                     <div class="box_filtros">
-                        <input type="text" placeholder="Buscar por ID do sensor..." class="input_busca">
-                        <select><option>Todos os tipos</option></select>
-                        <select><option>Todos os trens</option></select>
-                        <select><option>Todos os status</option></select>
+                        <input type="text" id="buscaTabela" placeholder="Buscar por trem..." class="input_busca">
+                        <select id="tabelaFiltroTrem">
+                            <option value="todos">Todos os trens</option>
+                        </select>
+                        <select id="tabelaFiltroStatus">
+                            <option value="todos">Todos os status</option>
+                            <option value="normal">Normal</option>
+                            <option value="atencao">Atenção</option>
+                            <option value="critico">Crítico</option>
+                        </select>
                     </div>
                 </div>
 
                 <div class="box_tabela">
                     <table>
-                        <!-- tabela preenchida futuramente -->
+                        <!-- preenchida pelo JS -->
                     </table>
                 </div>
             </div>
@@ -115,6 +121,7 @@
 
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../js/relatorios.js"></script>
 </body>
 </html>

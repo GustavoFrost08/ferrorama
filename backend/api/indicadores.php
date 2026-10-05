@@ -2,20 +2,9 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-$host = "localhost";
-$banco = "ferrorama";
-$usuario = "root";
-$senha = "";
+require_once 'conexao.php';
 
 try {
-
-    $pdo = new PDO(
-        "mysql:host=$host;dbname=$banco;charset=utf8mb4",
-        $usuario,
-        $senha
-    );
-
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $sql = "
         SELECT
@@ -38,7 +27,7 @@ try {
             ) AS sensores_criticos
     ";
 
-    $resultado = $pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+    $resultado = $conn->query($sql)->fetch_assoc();
 
     echo json_encode([
         "velocidade_media" => $resultado["velocidade_media"],

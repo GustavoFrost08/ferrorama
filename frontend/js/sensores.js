@@ -1,68 +1,43 @@
 let sensores = [];
 let alertas = [];
 let leituras = [];
+let trensDisponiveis = [];
 
-
-/* =========================
-   CARREGAR DADOS
-========================= */
 
 async function carregarSensores() {
+    try {
+        const resposta = await fetch("/ferrorama/backend/api/sensores.php");
+        const dados = await resposta.json();
 
-    const resposta = await fetch("/backend/sensores.php");
+        sensores = dados.sensores || [];
+        alertas = dados.alertas || [];
+        leituras = dados.leituras || [];
+        trensDisponiveis = dados.trens || [];
 
-    const dados = await resposta.json();
+        mostrarCards();
+        preencherTrens();
+        mostrarTabela();
+        mostrarAlertas();
+        criarGrafico();
 
-    sensores = dados.sensores;
-    alertas = dados.alertas;
-    leituras = dados.leituras;
-
-
-    mostrarCards();
-
-    preencherTrens();
-
-    mostrarTabela();
-
-    mostrarAlertas();
-
-    criarGrafico();
-
+    } catch (erro) {
+        console.log("Erro ao carregar sensores:", erro);
+    }
 }
 
 
-/* =========================
-   CARDS
-========================= */
-
 function mostrarCards() {
-
-    const total = sensores.length;
-
-    const normais = sensores.filter(
-        sensor => sensor.status === "normal"
-    ).length;
-
-    const alerta = sensores.filter(
-        sensor => sensor.status === "alerta"
-    ).length;
-
-    const criticos = sensores.filter(
-        sensor => sensor.status === "critico"
-    ).length;
-
+    let total = sensores.length;
+    let normais = sensores.filter(s => s.status == "normal").length;
+    let alerta = sensores.filter(s => s.status == "alerta").length;
+    let criticos = sensores.filter(s => s.status == "critico").length;
 
     document.getElementById("totalSensores").textContent = total;
-
     document.getElementById("sensoresNormais").textContent = normais;
-
     document.getElementById("sensoresAlerta").textContent = alerta;
-
     document.getElementById("sensoresCriticos").textContent = criticos;
 
-
     if (total > 0) {
-
         document.getElementById("porcentagemNormal").textContent =
             ((normais / total) * 100).toFixed(1) + "% do total";
 
@@ -71,426 +46,228 @@ function mostrarCards() {
 
         document.getElementById("porcentagemCritico").textContent =
             ((criticos / total) * 100).toFixed(1) + "% do total";
-
     }
-
 }
 
-
-/* =========================
-   FILTRO DE TRENS
-========================= */
 
 function preencherTrens() {
+    let select = document.getElementById("filtroTrem");
 
-    const select = document.getElementById("filtroTrem");
+    select.innerHTML = '<option value="todos">Todos os trens</option>';
 
-    const trens = [];
+    trensDisponiveis.forEach(function(trem) {
+        let option = document.createElement("option");
 
-    sensores.forEach(sensor => {
-
-        if (!trens.includes(sensor.trem_codigo)) {
-            trens.push(sensor.trem_codigo);
-        }
-
-    });
-
-
-    trens.forEach(trem => {
-
-        const option = document.createElement("option");
-
-        option.value = trem;
-
-        option.textContent = trem;
+        option.value = trem.codigo;
+        option.textContent = trem.codigo;
 
         select.appendChild(option);
-
     });
-
 }
 
 
-/* =========================
-   TABELA
-========================= */
-
 function mostrarTabela() {
+    let tabela = document.getElementById("tabelaSensores");
 
-    const tabela = document.getElementById("tabelaSensores");
+    let busca = document.getElementById("buscaSensor").value.toLowerCase();
+    let tipo = document.getElementById("filtroTipo").value;
+    let trem = document.getElementById("filtroTrem").value;
+    let status = document.getElementById("filtroStatus").value;
 
     tabela.innerHTML = "";
 
+    sensores.forEach(function(sensor) {
 
-    const busca =
-        document.getElementById("buscaSensor").value.toLowerCase();
+        let encontrouBusca = sensor.codigo.toLowerCase().includes(busca);
+        let encontrouTipo = tipo == "todos" || sensor.tipo == tipo;
+        let encontrouTrem = trem == "todos" || sensor.trem_codigo == trem;
+        let encontrouStatus = status == "todos" || sensor.status == status;
 
-    const tipo =
-        document.getElementById("filtroTipo").value;
+        if (encontrouBusca && encontrouTipo && encontrouTrem && encontrouStatus) {
 
-    const trem =
-        document.getElementById("filtroTrem").value;
-
-    const status =
-        document.getElementById("filtroStatus").value;
-
-
-    const sensoresFiltrados = sensores.filter(sensor => {
-
-        const correspondeBusca =
-            sensor.codigo.toLowerCase().includes(busca);
-
-        const correspondeTipo =
-            tipo === "todos" || sensor.tipo === tipo;
-
-        const correspondeTrem =
-            trem === "todos" || sensor.trem_codigo === trem;
-
-        const correspondeStatus =
-            status === "todos" || sensor.status === status;
-
-
-        return (
-            correspondeBusca &&
-            correspondeTipo &&
-            correspondeTrem &&
-            correspondeStatus
-        );
-
+            tabela.innerHTML += `
+                <tr>
+                    <td>${sensor.codigo}</td>
+                    <td>${formatarTipo(sensor.tipo)}</td>
+                    <td>${sensor.trem_codigo}</td>
+                    <td class="${sensor.status}">
+                        ${sensor.ultima_leitura} ${sensor.unidade || ""}
+                    </td>
+                    <td>
+                        ${sensor.limite_min} ${sensor.unidade || ""} -
+                        ${sensor.limite_max} ${sensor.unidade || ""}
+                    </td>
+                    <td class="${sensor.status}">
+                        ${formatarStatus(sensor.status)}
+                    </td>
+                    <td>${formatarData(sensor.atualizado_em)}</td>
+                </tr>
+            `;
+        }
     });
-
-
-    sensoresFiltrados.forEach(sensor => {
-
-        const linha = document.createElement("tr");
-
-
-        linha.innerHTML = `
-
-            <td>
-                ${sensor.codigo}
-            </td>
-
-            <td>
-                ${formatarTipo(sensor.tipo)}
-            </td>
-
-            <td>
-                ${sensor.trem_codigo}
-            </td>
-
-            <td class="${sensor.status}">
-                ${sensor.ultima_leitura} ${sensor.unidade}
-            </td>
-
-            <td>
-                ${sensor.limite_min} ${sensor.unidade}
-                -
-                ${sensor.limite_max} ${sensor.unidade}
-            </td>
-
-            <td class="${sensor.status}">
-                ${formatarStatus(sensor.status)}
-            </td>
-
-            <td>
-                ${formatarData(sensor.atualizado_em)}
-            </td>
-
-        `;
-
-
-        tabela.appendChild(linha);
-
-    });
-
 }
 
-
-/* =========================
-   TIPOS
-========================= */
 
 function formatarTipo(tipo) {
-
-    if (tipo === "temperatura") {
-        return "Temperatura";
-    }
-
-    if (tipo === "vibracao") {
-        return "Vibração";
-    }
-
-    if (tipo === "velocidade") {
-        return "Velocidade";
-    }
-
-    if (tipo === "pressao") {
-        return "Pressão";
-    }
+    if (tipo == "temperatura") return "Temperatura";
+    if (tipo == "vibracao") return "Vibração";
+    if (tipo == "velocidade") return "Velocidade";
+    if (tipo == "pressao") return "Pressão";
 
     return tipo;
-
 }
 
-
-/* =========================
-   STATUS
-========================= */
 
 function formatarStatus(status) {
-
-    if (status === "normal") {
-        return "NORMAL";
-    }
-
-    if (status === "alerta") {
-        return "ALERTA";
-    }
-
-    if (status === "critico") {
-        return "CRÍTICO";
-    }
+    if (status == "normal") return "NORMAL";
+    if (status == "alerta") return "ALERTA";
+    if (status == "critico") return "CRÍTICO";
 
     return status;
-
 }
 
-
-/* =========================
-   DATA
-========================= */
 
 function formatarData(data) {
+    if (!data) return "-";
 
-    if (!data) {
-        return "-";
-    }
-
-    const dataObj = new Date(data);
-
-    return dataObj.toLocaleString("pt-BR");
-
+    return new Date(data).toLocaleString("pt-BR");
 }
 
 
-/* =========================
-   ALERTAS
-========================= */
-
 function mostrarAlertas() {
-
-    const lista =
-        document.getElementById("listaAlertas");
+    let lista = document.getElementById("listaAlertas");
 
     lista.innerHTML = "";
 
+    alertas.forEach(function(alerta) {
 
-    alertas.forEach(alerta => {
+        let icone = alerta.gravidade == "critico" ? "×" : "!";
 
-        const div = document.createElement("div");
+        let motivo = alerta.gravidade == "critico"
+            ? "Fora do intervalo"
+            : "Próximo do limite";
 
-        div.className = "alerta_item " + alerta.gravidade;
+        lista.innerHTML += `
+            <div class="alerta_item ${alerta.gravidade}">
 
+                <div class="icone_alerta">
+                    ${icone}
+                </div>
 
-        div.innerHTML = `
+                <div class="texto_alerta">
+                    <strong>${alerta.sensor_codigo || alerta.titulo}</strong>
 
-            <div class="icone_alerta">
+                    <span>
+                        ${alerta.trem_codigo || ""} -
+                        ${formatarTipo(alerta.tipo || "")}
+                    </span>
+                </div>
 
-                ${alerta.gravidade === "critico" ? "×" : "!"}
+                <div class="valor_alerta">
+                    ${alerta.ultima_leitura || ""} ${alerta.unidade || ""}
 
-            </div>
-
-
-            <div class="texto_alerta">
-
-                <strong>
-                    ${alerta.sensor_codigo || alerta.titulo}
-                </strong>
-
-                <span>
-                    ${alerta.trem_codigo} - ${formatarTipo(alerta.tipo || "")}
-                </span>
-
-            </div>
-
-
-            <div class="valor_alerta">
-
-                ${alerta.ultima_leitura || ""} 
-                ${alerta.unidade || ""}
-
-                <small>
-                    ${alerta.gravidade === "critico"
-                        ? "Fora do intervalo"
-                        : "Próximo do limite"}
-                </small>
+                    <small>${motivo}</small>
+                </div>
 
             </div>
-
         `;
-
-
-        lista.appendChild(div);
-
     });
-
 }
 
 
-/* =========================
-   GRÁFICO
-========================= */
-
 function criarGrafico() {
-
-    const canvas =
-        document.getElementById("graficoSensores");
-
-    const ctx = canvas.getContext("2d");
-
+    let canvas = document.getElementById("graficoSensores");
+    let ctx = canvas.getContext("2d");
 
     canvas.width = canvas.offsetWidth;
-
     canvas.height = canvas.offsetHeight;
 
-
-    const largura = canvas.width;
-
-    const altura = canvas.height;
-
+    let largura = canvas.width;
+    let altura = canvas.height;
 
     ctx.clearRect(0, 0, largura, altura);
 
-
-    /* LINHAS HORIZONTAIS */
-
     ctx.strokeStyle = "rgba(255,255,255,0.1)";
 
-    ctx.lineWidth = 1;
-
-
     for (let i = 0; i <= 5; i++) {
-
-        const y = 20 + (i * (altura - 40) / 5);
+        let y = 20 + i * (altura - 40) / 5;
 
         ctx.beginPath();
-
         ctx.moveTo(0, y);
-
         ctx.lineTo(largura, y);
-
         ctx.stroke();
-
     }
 
+    let tipos = ["temperatura", "vibracao", "velocidade"];
+    let filtro = document.getElementById("filtroGrafico").value;
 
-    /* DESENHAR DADOS */
+    if (filtro != "todos") {
+        tipos = [filtro];
+    }
 
-    const tipos = [
-        "temperatura",
-        "vibracao",
-        "velocidade"
-    ];
+    tipos.forEach(function(tipo) {
 
+        let dados = leituras.filter(function(leitura) {
+            return leitura.tipo == tipo;
+        });
 
-    tipos.forEach(tipo => {
+        if (dados.length < 2) return;
 
-        const dados = leituras.filter(
-            leitura => leitura.tipo === tipo
-        );
+        let valores = dados.map(function(dado) {
+            return Number(dado.valor);
+        });
 
+        let maior = Math.max(...valores);
+        let menor = Math.min(...valores);
 
-        if (dados.length < 2) {
-            return;
-        }
-
-
-        let maior = Math.max(
-            ...dados.map(d => Number(d.valor))
-        );
-
-        let menor = Math.min(
-            ...dados.map(d => Number(d.valor))
-        );
-
-
-        if (maior === menor) {
-            maior++;
-        }
-
+        if (maior == menor) maior++;
 
         ctx.beginPath();
 
+        dados.forEach(function(dado, i) {
 
-        dados.forEach((dado, index) => {
+            let x = 10 + i / (dados.length - 1) * (largura - 20);
 
-            const x =
-                (index / (dados.length - 1)) *
-                (largura - 20) + 10;
-
-
-            const y =
-                altura - 20 -
-                ((Number(dado.valor) - menor) /
-                (maior - menor)) *
+            let y = altura - 20 -
+                ((Number(dado.valor) - menor) / (maior - menor)) *
                 (altura - 40);
 
-
-            if (index === 0) {
+            if (i == 0) {
                 ctx.moveTo(x, y);
             } else {
                 ctx.lineTo(x, y);
             }
-
         });
 
-
-        if (tipo === "temperatura") {
+        if (tipo == "temperatura") {
             ctx.strokeStyle = "#ef4444";
-        }
-
-        if (tipo === "vibracao") {
+        } else if (tipo == "vibracao") {
             ctx.strokeStyle = "#f59e0b";
-        }
-
-        if (tipo === "velocidade") {
+        } else {
             ctx.strokeStyle = "#22c55e";
         }
 
-
         ctx.lineWidth = 3;
-
         ctx.stroke();
-
     });
-
 }
 
 
-/* =========================
-   FILTROS
-========================= */
-
-document
-    .getElementById("buscaSensor")
+document.getElementById("buscaSensor")
     .addEventListener("input", mostrarTabela);
 
-document
-    .getElementById("filtroTipo")
+document.getElementById("filtroTipo")
     .addEventListener("change", mostrarTabela);
 
-document
-    .getElementById("filtroTrem")
+document.getElementById("filtroTrem")
     .addEventListener("change", mostrarTabela);
 
-document
-    .getElementById("filtroStatus")
+document.getElementById("filtroStatus")
     .addEventListener("change", mostrarTabela);
 
+document.getElementById("filtroGrafico")
+    .addEventListener("change", criarGrafico);
 
-/* =========================
-   INICIAR
-========================= */
+window.addEventListener("resize", criarGrafico);
 
 carregarSensores();

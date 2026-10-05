@@ -1,13 +1,15 @@
 <?php
-// conexao.php
-// Configuração padrão do XAMPP: usuário "root", sem senha, porta 3306
+mysqli_report(MYSQLI_REPORT_OFF);
+
+header("Content-Type: application/json");
 
 $host = "localhost";
 $usuario = "root";
 $senha = "";
 $banco = "ferrorama";
+$porta = "3308"; 
 
-$conn = new mysqli($host, $usuario, $senha, $banco);
+$conn = new mysqli($host, $usuario, $senha, $banco, $porta);
 
 if ($conn->connect_error) {
     http_response_code(500);

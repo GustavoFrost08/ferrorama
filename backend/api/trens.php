@@ -1,14 +1,12 @@
 <?php
+require "conexao.php";
 
-$conn = new mysqli("localhost", "root", "", "ferrorama");
+$resultado = $conn->query("SELECT * FROM trens ORDER BY id");
 
-if ($conn->connect_error) {
-    die("Erro na conexão");
+if ($resultado === false) {
+    echo json_encode(["erro" => $conn->error]);
+    exit;
 }
-
-$sql = "SELECT * FROM trens ORDER BY id";
-
-$resultado = $conn->query($sql);
 
 $trens = [];
 

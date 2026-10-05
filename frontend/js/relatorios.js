@@ -1,328 +1,301 @@
-// ===============================
-// DADOS DA TELA DE RELATÓRIOS.js
-// ===============================
+// =====================================================
+// TELA DE RELATÓRIOS - TrainFerro (dados reais do banco)
+// =====================================================
 
-fetch("../php/relatorios.php")
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Erro ao buscar dados do PHP");
-        }
-        return response.json();
-    })
-    .then(dados => {
-        console.log(dados);
+const API = "/ferrorama/backend/api/relatorios.php";
+const INTERVALO_ATUALIZACAO = 10000;   // 10 segundos
+const COR_TEXTO = "#d8c0b0";
+const CORES_TRENS = ["#f97316", "#22c55e", "#3b82f6", "#a855f7", "#eab308"];
+const MESES = ["jan.", "fev.", "mar.", "abr.", "mai.", "jun.", "jul.", "ago.", "set.", "out.", "nov.", "dez."];
 
-        console.log("Total de sensores:", dados.totalSensores);
-        console.log("Sensores normais:", dados.sensoresNormais);
-        console.log("Sensores em alerta:", dados.sensoresAlerta);
-        console.log("Sensores críticos:", dados.sensoresCriticos);
+// ---------- elementos da página ----------
+const inputInicio = document.getElementById("dataInicio");
+const inputFim = document.getElementById("dataFim");
+const selectTrem = document.getElementById("filtroTrem");
+const buscaTabela = document.getElementById("buscaTabela");
+const tabelaTrem = document.getElementById("tabelaFiltroTrem");
+const tabelaStatus = document.getElementById("tabelaFiltroStatus");
 
-        console.log("Trens:", dados.trens);
-    })
-    .catch(erro => {
-        console.error("Erro na comunicação com PHP:", erro);
-    });
-    
-    trens: [
-        {
-            codigo: "TR-001",
-            sensores: 32,
-            criticos: 8,
-            alertas: 6,
-            normais: 18,
-            status: "ATENÇÃO"
-        },
-        {
-            codigo: "TR-002",
-            sensores: 28,
-            criticos: 2,
-            alertas: 4,
-            normais: 22,
-            status: "NORMAL"
-        },
-        {
-            codigo: "TR-003",
-            sensores: 36,
-            criticos: 8,
-            alertas: 9,
-            normais: 19,
-            status: "CRÍTICO"
-        }
-    ],
+// indicador "ao vivo" ao lado dos filtros
+const indicador = document.createElement("span");
+indicador.style.cssText = "margin-left:auto;align-self:center;font-size:0.7rem;color:#d8c0b0;opacity:0.85";
+document.querySelector(".filtros_topo").appendChild(indicador);
 
-    grafico: {
-        trem01: [8, 10, 12, 18, 9, 11, 8, 15, 17, 9, 14, 12],
-        trem02: [2, 3, 5, 4, 5, 3, 4, 6, 5, 3, 5, 4],
-        trem03: [4, 6, 10, 7, 6, 7, 11, 8, 10, 6, 8, 11]
-    }
-};
-
-// ===============================
-// CARDS SUPERIORES
-// ===============================
-
-const cards = document.querySelectorAll(".linha_cima .frota");
-
-if (cards.length >= 4) {
-
-    cards[0].innerHTML = `
-        <div class="img_status sensor-icon">🚆</div>
-        <div class="text_frota">
-            <span>Total de sensores</span>
-            <strong>${dados.totalSensores}</strong>
-            <small>Cadastrados</small>
-        </div>
-    `;
-
-    cards[1].innerHTML = `
-        <div class="img_status status-normal">✓</div>
-        <div class="text_frota">
-            <span>Sensores normais</span>
-            <strong>${dados.sensoresNormais}</strong>
-            <small>85,9% do total</small>
-        </div>
-    `;
-
-    cards[2].innerHTML = `
-        <div class="img_status status-alerta">!</div>
-        <div class="text_frota">
-            <span>Sensores em alerta</span>
-            <strong>${dados.sensoresAlerta}</strong>
-            <small>9,4% do total</small>
-        </div>
-    `;
-
-    cards[3].innerHTML = `
-        <div class="img_status status-critico">×</div>
-        <div class="text_frota">
-            <span>Sensores críticos</span>
-            <strong>${dados.sensoresCriticos}</strong>
-            <small>4,7% do total</small>
-        </div>
-    `;
+// ---------- período padrão: últimos 12 dias (até hoje) ----------
+function iso(data) {
+    const mes = String(data.getMonth() + 1).padStart(2, "0");
+    const dia = String(data.getDate()).padStart(2, "0");
+    return `${data.getFullYear()}-${mes}-${dia}`;
 }
 
-// ===============================
-// GRÁFICO DE LINHA
-// ===============================
+const hoje = new Date();
+const inicioPadrao = new Date();
+inicioPadrao.setDate(hoje.getDate() - 11);
+inputInicio.value = iso(inicioPadrao);
+inputFim.value = iso(hoje);
 
-const areaGrafico = document.querySelector(".area_grafico_linha");
+// ---------- estado ----------
+let dados = null;
+let graficoLinha = null;
+let graficoRosca = null;
+let selectsPreenchidos = false;
+let ultimaRequisicao = 0;
 
-if (areaGrafico) {
+// =====================================================
+// BUSCA OS DADOS NO PHP
+// =====================================================
+async function carregar() {
+    if (!inputInicio.value || !inputFim.value) return;
 
-    areaGrafico.innerHTML = `
-        <div class="grafico_legenda">
-            <span><i class="leg trem01"></i> Trem 01</span>
-            <span><i class="leg trem02"></i> Trem 02</span>
-            <span><i class="leg trem03"></i> Trem 03</span>
-        </div>
+    const minhaRequisicao = ++ultimaRequisicao;
+    const params = new URLSearchParams({
+        inicio: inputInicio.value,
+        fim: inputFim.value,
+        trem: selectTrem.value
+    });
 
-        <canvas id="graficoOcorrencias"></canvas>
-    `;
+    try {
+        const resposta = await fetch(`${API}?${params}`, { cache: "no-store" });
+        const texto = await resposta.text();
 
-    const canvas = document.getElementById("graficoOcorrencias");
-    const ctx = canvas.getContext("2d");
+        if (!resposta.ok) {
+            throw new Error("HTTP " + resposta.status + " ao abrir " + resposta.url + " | " + texto.slice(0, 200));
+        }
 
-    canvas.width = areaGrafico.clientWidth;
-    canvas.height = 190;
+        let novos;
+        try {
+            novos = JSON.parse(texto);
+        } catch (e) {
+            throw new Error("A resposta do PHP não é JSON. Ela começa com: " + texto.slice(0, 200));
+        }
 
-    const largura = canvas.width;
-    const altura = canvas.height;
+        // se chegou uma resposta mais antiga que outra já pedida, ignora
+        if (minhaRequisicao !== ultimaRequisicao) return;
 
-    const margemEsq = 35;
-    const margemBaixo = 25;
-    const margemTopo = 10;
-    const margemDir = 10;
+        dados = novos;
+        indicador.textContent = "● Ao vivo · atualizado às " + dados.atualizadoEm;
+        indicador.style.color = "#22c55e";
 
-    const larguraGrafico =
-        largura - margemEsq - margemDir;
+        // cada parte é desenhada separadamente: um erro não derruba as outras
+        executar(preencherSelects);
+        executar(desenharCards);
+        executar(desenharLinha);
+        executar(desenharRosca);
+        executar(desenharTabela);
 
-    const alturaGrafico =
-        altura - margemTopo - margemBaixo;
+    } catch (erro) {
+        console.error("Erro ao carregar dados:", erro);
+        indicador.textContent = "● Sem conexão com o servidor";
+        indicador.style.color = "#e00000";
 
-    const maiorValor = 20;
-
-    // ===============================
-    // LINHAS HORIZONTAIS
-    // ===============================
-
-    ctx.strokeStyle = "rgba(255,255,255,0.10)";
-    ctx.lineWidth = 1;
-
-    for (let i = 0; i <= 4; i++) {
-
-        const y =
-            margemTopo +
-            (alturaGrafico / 4) * i;
-
-        ctx.beginPath();
-        ctx.moveTo(margemEsq, y);
-        ctx.lineTo(largura - margemDir, y);
-        ctx.stroke();
-
-        ctx.fillStyle = "#d8c0b0";
-        ctx.font = "9px Arial";
-
-        ctx.fillText(
-            20 - (i * 5),
-            5,
-            y + 3
-        );
+        if (!dados) {
+            document.querySelector(".box_tabela table").innerHTML =
+                `<tbody><tr><td colspan="7" id="msgErro" style="text-align:center;white-space:pre-wrap"></td></tr></tbody>`;
+            document.getElementById("msgErro").textContent =
+                "Não foi possível carregar os dados.\nMotivo: " + erro.message +
+                "\nPágina aberta em: " + location.href;
+        }
     }
+}
 
-    // ===============================
-    // FUNÇÃO PARA DESENHAR LINHAS
-    // ===============================
-
-    function desenharLinha(valores, cor) {
-
-        ctx.beginPath();
-
-        valores.forEach((valor, index) => {
-
-            const x =
-                margemEsq +
-                (larguraGrafico / (valores.length - 1)) * index;
-
-            const y =
-                margemTopo +
-                alturaGrafico -
-                (valor / maiorValor) * alturaGrafico;
-
-            if (index === 0) {
-                ctx.moveTo(x, y);
-            } else {
-                ctx.lineTo(x, y);
-            }
-        });
-
-        ctx.strokeStyle = cor;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        // pontos da linha
-        valores.forEach((valor, index) => {
-
-            const x =
-                margemEsq +
-                (larguraGrafico / (valores.length - 1)) * index;
-
-            const y =
-                margemTopo +
-                alturaGrafico -
-                (valor / maiorValor) * alturaGrafico;
-
-            ctx.beginPath();
-            ctx.arc(x, y, 2.5, 0, Math.PI * 2);
-
-            ctx.fillStyle = cor;
-            ctx.fill();
-        });
+function executar(funcao) {
+    try {
+        funcao();
+    } catch (erro) {
+        console.error("Erro em " + funcao.name + ":", erro);
     }
+}
 
-    // ===============================
-    // DESENHA AS 3 LINHAS
-    // ===============================
+// "TR-001" -> "Trem 01"
+function nomeTrem(codigo) {
+    const numero = parseInt(String(codigo).replace(/\D/g, ""), 10);
+    return "Trem " + String(isNaN(numero) ? codigo : numero).padStart(2, "0");
+}
 
-    desenharLinha(
-        dados.grafico.trem01,
-        "#f97316"
-    );
+// =====================================================
+// SELECTS DE TREM (preenchidos uma vez, com os trens do banco)
+// =====================================================
+function preencherSelects() {
+    if (selectsPreenchidos) return;
+    selectsPreenchidos = true;
 
-    desenharLinha(
-        dados.grafico.trem02,
-        "#22c55e"
-    );
+    const opcoes = dados.trensLista
+        .map(t => `<option value="${t.id}">${nomeTrem(t.codigo)}</option>`)
+        .join("");
 
-    desenharLinha(
-        dados.grafico.trem03,
-        "#3b82f6"
-    );
+    selectTrem.innerHTML = `<option value="todos">Todos os trens</option>${opcoes}`;
+    tabelaTrem.innerHTML = `<option value="todos">Todos os trens</option>${opcoes}`;
+}
 
-    // ===============================
-    // DATAS
-    // ===============================
+// =====================================================
+// CARDS
+// =====================================================
+function pct(parte, total) {
+    return total ? ((parte / total) * 100).toFixed(1).replace(".", ",") : "0,0";
+}
 
-    const datas = [
-        "01 mai. 2026",
-        "02 mai. 2026",
-        "03 mai. 2026",
-        "04 mai. 2026",
-        "05 mai. 2026",
-        "06 mai. 2026",
-        "07 mai. 2026",
-        "08 mai. 2026",
-        "09 mai. 2026",
-        "10 mai. 2026",
-        "11 mai. 2026",
-        "12 mai. 2026"
+function desenharCards() {
+    const cards = document.querySelectorAll(".linha_cima .frota");
+    const d = dados;
+
+    const lista = [
+        { icone: "🚆", classe: "sensor-icon",    titulo: "Total de sensores",  valor: d.totalSensores,    legenda: "Cadastrados" },
+        { icone: "✓",  classe: "status-normal",  titulo: "Sensores normais",   valor: d.sensoresNormais,  legenda: pct(d.sensoresNormais, d.totalSensores) + "% do total" },
+        { icone: "!",  classe: "status-alerta",  titulo: "Sensores em alerta", valor: d.sensoresAlerta,   legenda: pct(d.sensoresAlerta, d.totalSensores) + "% do total" },
+        { icone: "×",  classe: "status-critico", titulo: "Sensores críticos",  valor: d.sensoresCriticos, legenda: pct(d.sensoresCriticos, d.totalSensores) + "% do total" }
     ];
 
-    ctx.fillStyle = "#d8c0b0";
-    ctx.font = "8px Arial";
-
-    datas.forEach((data, index) => {
-
-        const x =
-            margemEsq +
-            (larguraGrafico / (datas.length - 1)) * index;
-
-        ctx.fillText(
-            data,
-            x - 25,
-            altura - 5
-        );
+    lista.forEach((item, i) => {
+        if (!cards[i]) return;
+        cards[i].innerHTML = `
+            <div class="img_status ${item.classe}">${item.icone}</div>
+            <div class="text_frota">
+                <span>${item.titulo}</span>
+                <strong>${item.valor}</strong>
+                <small>${item.legenda}</small>
+            </div>`;
     });
 }
 
-// ===============================
-// GRÁFICO DE ROSCA
-// ===============================
-
-const areaRosca = document.querySelector(".area_grafico_rosca");
-
-if (areaRosca) {
-
-    areaRosca.innerHTML = `
-        <div class="rosca-container">
-
-            <div class="rosca">
-                <div class="rosca-centro"></div>
-            </div>
-
-            <div class="rosca-legenda">
-
-                <div>
-                    <span class="quadrado critico"></span>
-                    Críticas
-                    <strong>45%</strong>
-                </div>
-
-                <div>
-                    <span class="quadrado alerta"></span>
-                    Alertas
-                    <strong>30%</strong>
-                </div>
-
-                <div>
-                    <span class="quadrado normal"></span>
-                    Normais
-                    <strong>25%</strong>
-                </div>
-
-            </div>
-
-        </div>
-    `;
+// =====================================================
+// GRÁFICO DE LINHA
+// =====================================================
+function formatarData(isoData) {
+    // "2026-05-01" -> "01 mai. 2026"
+    return `${isoData.slice(8, 10)} ${MESES[Number(isoData.slice(5, 7)) - 1]} ${isoData.slice(0, 4)}`;
 }
 
-// ===============================
+function desenharLinha() {
+    if (typeof Chart === "undefined") {
+        console.error("Chart.js não carregou (verifique a internet e o <script> no HTML)");
+        return;
+    }
+
+    const g = dados.grafico;
+    const labels = g.labels.map(formatarData);
+
+    const datasets = g.series.map((serie, i) => ({
+        label: nomeTrem(serie.trem),
+        data: serie.valores,
+        borderColor: CORES_TRENS[i % CORES_TRENS.length],
+        backgroundColor: CORES_TRENS[i % CORES_TRENS.length],
+        tension: 0.4,
+        borderWidth: 2,
+        pointRadius: 3
+    }));
+
+    // já existe: só atualiza os dados (sem piscar)
+    if (graficoLinha) {
+        graficoLinha.data.labels = labels;
+        graficoLinha.data.datasets = datasets;
+        graficoLinha.update();
+        return;
+    }
+
+    const ctx = document.getElementById("graficoOcorrencias").getContext("2d");
+    graficoLinha = new Chart(ctx, {
+        type: "line",
+        data: { labels: labels, datasets: datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: "index", intersect: false },
+            plugins: {
+                legend: {
+                    position: "top",
+                    labels: { color: COR_TEXTO, usePointStyle: true, boxWidth: 6, font: { size: 10 } }
+                }
+            },
+            scales: {
+                x: { ticks: { color: COR_TEXTO, font: { size: 9 } }, grid: { display: false } },
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: COR_TEXTO, font: { size: 9 }, precision: 0 },
+                    grid: { color: "rgba(255,255,255,0.10)" }
+                }
+            }
+        }
+    });
+}
+
+// =====================================================
+// GRÁFICO DE ROSCA
+// =====================================================
+function desenharRosca() {
+    if (typeof Chart === "undefined") return;
+
+    const t = dados.tipos;
+    const soma = t.critico + t.alerta + t.normal;
+    const p = v => Math.round((v / soma) * 100);
+    const vazio = soma === 0;
+
+    const labels = vazio
+        ? ["Sem ocorrências"]
+        : [`Críticas ${p(t.critico)}%`, `Alertas ${p(t.alerta)}%`, `Normais ${p(t.normal)}%`];
+    const valores = vazio ? [1] : [t.critico, t.alerta, t.normal];
+    const cores = vazio ? ["#5a4535"] : ["#e00000", "#ff8c00", "#299b18"];
+
+    if (graficoRosca) {
+        graficoRosca.data.labels = labels;
+        graficoRosca.data.datasets[0].data = valores;
+        graficoRosca.data.datasets[0].backgroundColor = cores;
+        graficoRosca.options.plugins.tooltip.enabled = !vazio;
+        graficoRosca.update();
+        return;
+    }
+
+    const ctx = document.getElementById("graficoRosca").getContext("2d");
+    graficoRosca = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: labels,
+            datasets: [{ data: valores, backgroundColor: cores, borderWidth: 0 }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "55%",
+            plugins: {
+                tooltip: { enabled: !vazio },
+                legend: { position: "right", labels: { color: COR_TEXTO, boxWidth: 10, font: { size: 10 } } }
+            }
+        }
+    });
+}
+
+// =====================================================
 // TABELA
-// ===============================
+// =====================================================
+function slug(texto) {
+    // "CRÍTICO" -> "critico", "ATENÇÃO" -> "atencao"
+    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
 
-const tabela = document.querySelector(".box_tabela table");
+function desenharTabela() {
+    const tabela = document.querySelector(".box_tabela table");
+    const termo = buscaTabela.value.trim().toLowerCase();
 
-if (tabela) {
+    const linhas = dados.trens.filter(t =>
+        (tabelaTrem.value === "todos" || String(t.id) === tabelaTrem.value) &&
+        (tabelaStatus.value === "todos" || slug(t.status) === tabelaStatus.value) &&
+        (termo === "" || t.codigo.toLowerCase().includes(termo) || nomeTrem(t.codigo).toLowerCase().includes(termo))
+    );
+
+    const corpo = linhas.length === 0
+        ? `<tr><td colspan="7" style="text-align:center">Nenhum resultado</td></tr>`
+        : linhas.map(t => `
+            <tr>
+                <td><span class="icone-trem">🚆</span>${nomeTrem(t.codigo).toUpperCase()}</td>
+                <td>${t.sensores}</td>
+                <td>${t.criticos}</td>
+                <td>${t.alertas}</td>
+                <td>${t.normais}</td>
+                <td>${t.sensores}</td>
+                <td>
+                    <span class="status-tabela ${slug(t.status)}">${t.status}</span>
+                    <button class="btn-ver" data-id="${t.id}">ver</button>
+                </td>
+            </tr>`).join("");
 
     tabela.innerHTML = `
         <thead>
@@ -336,68 +309,47 @@ if (tabela) {
                 <th>STATUS</th>
             </tr>
         </thead>
-
-        <tbody>
-
-            ${dados.trens.map(trem => `
-
-                <tr>
-
-                    <td>
-                        <span class="icone-trem">♙</span>
-                        ${trem.codigo.replace("-", " ")}
-                    </td>
-
-                    <td>
-                        ${trem.sensores}
-                    </td>
-
-                    <td>
-                        ${trem.criticos}
-                    </td>
-
-                    <td>
-                        ${trem.alertas}
-                    </td>
-
-                    <td>
-                        ${trem.normais}
-                    </td>
-
-                    <td>
-                        ${trem.sensores}
-                    </td>
-
-                    <td>
-
-                        <span class="status-tabela ${trem.status.toLowerCase()}">
-                            ${trem.status}
-                        </span>
-
-                        <button class="btn-ver">
-                            ver
-                        </button>
-
-                    </td>
-
-                </tr>
-
-            `).join("")}
-
-        </tbody>
-    `;
+        <tbody>${corpo}</tbody>`;
 }
 
-// ===============================
-// BOTÃO GERAR RELATÓRIO
-// ===============================
+// =====================================================
+// EVENTOS
+// =====================================================
+// filtros de cima -> buscam dados de novo
+[inputInicio, inputFim, selectTrem].forEach(el => el.addEventListener("change", carregar));
 
-const botaoRelatorio = document.querySelector(".btn_gerar_relatorio");
+// filtros da tabela -> só redesenham a tabela
+buscaTabela.addEventListener("input", () => dados && executar(desenharTabela));
+tabelaTrem.addEventListener("change", () => dados && executar(desenharTabela));
+tabelaStatus.addEventListener("change", () => dados && executar(desenharTabela));
 
-if (botaoRelatorio) {
+// botão "ver"
+document.querySelector(".box_tabela").addEventListener("click", e => {
+    if (e.target.classList.contains("btn-ver")) {
+        window.location.href = `../html/sensores.html?trem=${e.target.dataset.id}`;
+    }
+});
 
-    botaoRelatorio.addEventListener("click", function () {
+// botão "gerar relatório" -> baixa CSV (abre no Excel)
+document.querySelector(".btn_gerar_relatorio").addEventListener("click", () => {
+    if (!dados) return;
 
-        alert("Relatório gerado com sucesso!");
-    });
-}
+    const linhas = [
+        ["Trem", "Sensores", "Críticos", "Alertas", "Normais", "Total", "Status"],
+        ...dados.trens.map(t => [t.codigo, t.sensores, t.criticos, t.alertas, t.normais, t.sensores, t.status])
+    ];
+
+    const csv = "\uFEFF" + linhas.map(l => l.join(";")).join("\n");
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
+    link.download = `relatorio_${inputInicio.value}_a_${inputFim.value}.csv`;
+    link.click();
+});
+
+// =====================================================
+// INÍCIO + ATUALIZAÇÃO AUTOMÁTICA (tempo real)
+// =====================================================
+carregar();
+setInterval(() => {
+    if (!document.hidden) carregar();   // não atualiza se a aba estiver em segundo plano
+}, INTERVALO_ATUALIZACAO);
