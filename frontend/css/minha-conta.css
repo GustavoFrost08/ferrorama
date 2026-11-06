@@ -1,0 +1,121 @@
+.pagina-conta{
+    background:var(--bg-card);
+    border-radius:8px;
+    padding:25px;
+    margin:25px auto;
+    width:90%;
+}
+
+.cabecalho-conta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.cabecalho-conta h2{
+    margin:0;
+}
+
+.cabecalho-conta a{
+    color:var(--text-secondary);
+    text-decoration:none;
+    font-size:.85rem;
+}
+
+.perfil-conta{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:20px;
+    border:1px solid var(--border-color);
+    border-radius:8px;
+    margin-bottom:25px;
+}
+
+.icone-perfil{
+    background:var(--bg-input);
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+}
+
+.perfil-conta h2{
+    margin:0 0 6px;
+    color:var(--text-primary);
+}
+
+.perfil-conta span{
+    color:var(--text-secondary);
+    font-size:.85rem;
+}
+
+.campos-conta{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.campos-conta div{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.campos-conta label{
+    color:var(--text-secondary);
+    font-size:.85rem;
+}
+
+.campos-conta input{
+    background:var(--bg-input);
+    border:1px solid var(--border-color);
+    border-radius:6px;
+    padding:12px;
+    color:var(--text-primary);
+    outline:none;
+}
+
+.informacoes-conta{
+    margin-top:25px;
+    color:var(--text-secondary);
+    font-size:.85rem;
+}
+
+.botoes-conta{
+    display:flex;
+    gap:12px;
+    margin-top:25px;
+}
+
+.botoes-conta button{
+    padding:12px 20px;
+    border:0;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+#btnSalvar{
+    background:#d8bda5;
+    color:#3d2514;
+}
+
+#btnSair{
+    background:#a83232;
+    color:white;
+}
+
+@media(max-width:600px){
+    .campos-conta{
+        grid-template-columns:1fr;
+    }
+
+    .botoes-conta{
+        flex-direction:column;
+    }
+}

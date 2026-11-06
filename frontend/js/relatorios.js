@@ -1,355 +1,453 @@
-// =====================================================
-// TELA DE RELATÓRIOS - TrainFerro (dados reais do banco)
-// =====================================================
+var campoInicio = document.getElementById("dataInicio");
+var campoFim = document.getElementById("dataFim");
+var filtroTremTopo = document.getElementById("filtroTremTopo");
 
-const API = "/ferrorama/backend/api/relatorios.php";
-const INTERVALO_ATUALIZACAO = 10000;   // 10 segundos
-const COR_TEXTO = "#d8c0b0";
-const CORES_TRENS = ["#f97316", "#22c55e", "#3b82f6", "#a855f7", "#eab308"];
-const MESES = ["jan.", "fev.", "mar.", "abr.", "mai.", "jun.", "jul.", "ago.", "set.", "out.", "nov.", "dez."];
+var botaoModo = document.getElementById("btnModo");
+var botaoGerar = document.getElementById("btnGerar");
 
-// ---------- elementos da página ----------
-const inputInicio = document.getElementById("dataInicio");
-const inputFim = document.getElementById("dataFim");
-const selectTrem = document.getElementById("filtroTrem");
-const buscaTabela = document.getElementById("buscaTabela");
-const tabelaTrem = document.getElementById("tabelaFiltroTrem");
-const tabelaStatus = document.getElementById("tabelaFiltroStatus");
+var buscaSensor = document.getElementById("buscaSensor");
+var filtroTipo = document.getElementById("filtroTipo");
+var filtroTremTabela = document.getElementById("filtroTremTabela");
+var filtroStatus = document.getElementById("filtroStatus");
 
-// indicador "ao vivo" ao lado dos filtros
-const indicador = document.createElement("span");
-indicador.style.cssText = "margin-left:auto;align-self:center;font-size:0.7rem;color:#d8c0b0;opacity:0.85";
-document.querySelector(".filtros_topo").appendChild(indicador);
+var modal = document.getElementById("modalTrem");
+var botaoFechar = document.getElementById("btnFechar");
 
-// ---------- período padrão: últimos 12 dias (até hoje) ----------
-function iso(data) {
-    const mes = String(data.getMonth() + 1).padStart(2, "0");
-    const dia = String(data.getDate()).padStart(2, "0");
-    return `${data.getFullYear()}-${mes}-${dia}`;
+var listaSensores = [];   
+var graficoLinha = null;  
+var graficoRosca = null;
+var modoAdmin = true;     
+
+
+if (typeof Chart != "undefined") {
+    Chart.defaults.color = "#d9cdb8";
+    Chart.defaults.borderColor = "rgba(163, 140, 122, 0.3)";
 }
 
-const hoje = new Date();
-const inicioPadrao = new Date();
-inicioPadrao.setDate(hoje.getDate() - 11);
-inputInicio.value = iso(inicioPadrao);
-inputFim.value = iso(hoje);
-
-// ---------- estado ----------
-let dados = null;
-let graficoLinha = null;
-let graficoRosca = null;
-let selectsPreenchidos = false;
-let ultimaRequisicao = 0;
-
-// =====================================================
-// BUSCA OS DADOS NO PHP
-// =====================================================
-async function carregar() {
-    if (!inputInicio.value || !inputFim.value) return;
-
-    const minhaRequisicao = ++ultimaRequisicao;
-    const params = new URLSearchParams({
-        inicio: inputInicio.value,
-        fim: inputFim.value,
-        trem: selectTrem.value
-    });
-
-    try {
-        const resposta = await fetch(`${API}?${params}`, { cache: "no-store" });
-        const texto = await resposta.text();
-
-        if (!resposta.ok) {
-            throw new Error("HTTP " + resposta.status + " ao abrir " + resposta.url + " | " + texto.slice(0, 200));
-        }
-
-        let novos;
-        try {
-            novos = JSON.parse(texto);
-        } catch (e) {
-            throw new Error("A resposta do PHP não é JSON. Ela começa com: " + texto.slice(0, 200));
-        }
-
-        // se chegou uma resposta mais antiga que outra já pedida, ignora
-        if (minhaRequisicao !== ultimaRequisicao) return;
-
-        dados = novos;
-        indicador.textContent = "● Ao vivo · atualizado às " + dados.atualizadoEm;
-        indicador.style.color = "#22c55e";
-
-        // cada parte é desenhada separadamente: um erro não derruba as outras
-        executar(preencherSelects);
-        executar(desenharCards);
-        executar(desenharLinha);
-        executar(desenharRosca);
-        executar(desenharTabela);
-
-    } catch (erro) {
-        console.error("Erro ao carregar dados:", erro);
-        indicador.textContent = "● Sem conexão com o servidor";
-        indicador.style.color = "#e00000";
-
-        if (!dados) {
-            document.querySelector(".box_tabela table").innerHTML =
-                `<tbody><tr><td colspan="7" id="msgErro" style="text-align:center;white-space:pre-wrap"></td></tr></tbody>`;
-            document.getElementById("msgErro").textContent =
-                "Não foi possível carregar os dados.\nMotivo: " + erro.message +
-                "\nPágina aberta em: " + location.href;
-        }
-    }
+function limpar(texto) {
+    texto = String(texto);
+    texto = texto.replace(/&/g, "&amp;");
+    texto = texto.replace(/</g, "&lt;");
+    texto = texto.replace(/>/g, "&gt;");
+    return texto;
 }
 
-function executar(funcao) {
-    try {
-        funcao();
-    } catch (erro) {
-        console.error("Erro em " + funcao.name + ":", erro);
-    }
-}
-
-// "TR-001" -> "Trem 01"
-function nomeTrem(codigo) {
-    const numero = parseInt(String(codigo).replace(/\D/g, ""), 10);
-    return "Trem " + String(isNaN(numero) ? codigo : numero).padStart(2, "0");
-}
-
-// =====================================================
-// SELECTS DE TREM (preenchidos uma vez, com os trens do banco)
-// =====================================================
-function preencherSelects() {
-    if (selectsPreenchidos) return;
-    selectsPreenchidos = true;
-
-    const opcoes = dados.trensLista
-        .map(t => `<option value="${t.id}">${nomeTrem(t.codigo)}</option>`)
-        .join("");
-
-    selectTrem.innerHTML = `<option value="todos">Todos os trens</option>${opcoes}`;
-    tabelaTrem.innerHTML = `<option value="todos">Todos os trens</option>${opcoes}`;
-}
-
-// =====================================================
-// CARDS
-// =====================================================
-function pct(parte, total) {
-    return total ? ((parte / total) * 100).toFixed(1).replace(".", ",") : "0,0";
-}
-
-function desenharCards() {
-    const cards = document.querySelectorAll(".linha_cima .frota");
-    const d = dados;
-
-    const lista = [
-        { icone: "🚆", classe: "sensor-icon",    titulo: "Total de sensores",  valor: d.totalSensores,    legenda: "Cadastrados" },
-        { icone: "✓",  classe: "status-normal",  titulo: "Sensores normais",   valor: d.sensoresNormais,  legenda: pct(d.sensoresNormais, d.totalSensores) + "% do total" },
-        { icone: "!",  classe: "status-alerta",  titulo: "Sensores em alerta", valor: d.sensoresAlerta,   legenda: pct(d.sensoresAlerta, d.totalSensores) + "% do total" },
-        { icone: "×",  classe: "status-critico", titulo: "Sensores críticos",  valor: d.sensoresCriticos, legenda: pct(d.sensoresCriticos, d.totalSensores) + "% do total" }
-    ];
-
-    lista.forEach((item, i) => {
-        if (!cards[i]) return;
-        cards[i].innerHTML = `
-            <div class="img_status ${item.classe}">${item.icone}</div>
-            <div class="text_frota">
-                <span>${item.titulo}</span>
-                <strong>${item.valor}</strong>
-                <small>${item.legenda}</small>
-            </div>`;
-    });
-}
-
-// =====================================================
-// GRÁFICO DE LINHA
-// =====================================================
-function formatarData(isoData) {
-    // "2026-05-01" -> "01 mai. 2026"
-    return `${isoData.slice(8, 10)} ${MESES[Number(isoData.slice(5, 7)) - 1]} ${isoData.slice(0, 4)}`;
-}
-
-function desenharLinha() {
-    if (typeof Chart === "undefined") {
-        console.error("Chart.js não carregou (verifique a internet e o <script> no HTML)");
-        return;
+function porcentagem(parte, total) {
+    if (total == 0) {
+        return "0,0%";
     }
 
-    const g = dados.grafico;
-    const labels = g.labels.map(formatarData);
+    var valor = (parte / total) * 100;
+    valor = valor.toFixed(1);
+    return valor.replace(".", ",") + "%";
+}
 
-    const datasets = g.series.map((serie, i) => ({
-        label: nomeTrem(serie.trem),
-        data: serie.valores,
-        borderColor: CORES_TRENS[i % CORES_TRENS.length],
-        backgroundColor: CORES_TRENS[i % CORES_TRENS.length],
-        tension: 0.4,
-        borderWidth: 2,
-        pointRadius: 3
-    }));
+function nomeDoTipo(tipo) {
+    if (tipo == "temperatura") return "Temperatura";
+    if (tipo == "vibracao") return "Vibração";
+    if (tipo == "velocidade") return "Velocidade";
+    return "Pressão";
+}
 
-    // já existe: só atualiza os dados (sem piscar)
-    if (graficoLinha) {
-        graficoLinha.data.labels = labels;
-        graficoLinha.data.datasets = datasets;
-        graficoLinha.update();
-        return;
-    }
+function nomeDoStatus(status) {
+    if (status == "normal") return "Normal";
+    if (status == "alerta") return "Alerta";
+    return "Crítico";
+}
 
-    const ctx = document.getElementById("graficoOcorrencias").getContext("2d");
-    graficoLinha = new Chart(ctx, {
-        type: "line",
-        data: { labels: labels, datasets: datasets },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: { mode: "index", intersect: false },
-            plugins: {
-                legend: {
-                    position: "top",
-                    labels: { color: COR_TEXTO, usePointStyle: true, boxWidth: 6, font: { size: 10 } }
-                }
-            },
-            scales: {
-                x: { ticks: { color: COR_TEXTO, font: { size: 9 } }, grid: { display: false } },
-                y: {
-                    beginAtZero: true,
-                    ticks: { color: COR_TEXTO, font: { size: 9 }, precision: 0 },
-                    grid: { color: "rgba(255,255,255,0.10)" }
-                }
+function corDoStatus(status) {
+    if (status == "normal") return "cor-verde";
+    if (status == "alerta") return "cor-amarelo";
+    return "cor-vermelho";
+}
+
+function colocarDataDeHoje() {
+    var hoje = new Date();
+    var ano = hoje.getFullYear();
+    var mes = hoje.getMonth() + 1;
+    var dia = hoje.getDate();
+
+    if (mes < 10) mes = "0" + mes;
+    if (dia < 10) dia = "0" + dia;
+
+    campoFim.value = ano + "-" + mes + "-" + dia;
+}
+
+function carregarSensores() {
+    fetch("../../backend/api/relatorio_sensores.php")
+        .then(function (resposta) {
+            return resposta.json();
+        })
+        .then(function (sensores) {
+
+            if (sensores.erro) {
+                alert("Erro do banco: " + sensores.erro);
+                return;
             }
-        }
-    });
+
+            listaSensores = sensores;
+            preencherSelectsDeTrem();
+            montarTabela();
+            atualizarTudo();
+        })
+        .catch(function (erro) {
+            alert("Não foi possível carregar os sensores: " + erro);
+        });
 }
 
-// =====================================================
-// GRÁFICO DE ROSCA
-// =====================================================
-function desenharRosca() {
-    if (typeof Chart === "undefined") return;
+function preencherSelectsDeTrem() {
+    var idsVistos = [];
+    var opcoes = "<option value='0'>Todos os trens</option>";
 
-    const t = dados.tipos;
-    const soma = t.critico + t.alerta + t.normal;
-    const p = v => Math.round((v / soma) * 100);
-    const vazio = soma === 0;
+    for (var i = 0; i < listaSensores.length; i++) {
+        var s = listaSensores[i];
 
-    const labels = vazio
-        ? ["Sem ocorrências"]
-        : [`Críticas ${p(t.critico)}%`, `Alertas ${p(t.alerta)}%`, `Normais ${p(t.normal)}%`];
-    const valores = vazio ? [1] : [t.critico, t.alerta, t.normal];
-    const cores = vazio ? ["#5a4535"] : ["#e00000", "#ff8c00", "#299b18"];
 
-    if (graficoRosca) {
-        graficoRosca.data.labels = labels;
-        graficoRosca.data.datasets[0].data = valores;
-        graficoRosca.data.datasets[0].backgroundColor = cores;
-        graficoRosca.options.plugins.tooltip.enabled = !vazio;
-        graficoRosca.update();
+        if (idsVistos.indexOf(s.trem_id) == -1) {
+            idsVistos.push(s.trem_id);
+            opcoes = opcoes + "<option value='" + s.trem_id + "'>" + limpar(s.trem) + "</option>";
+        }
+    }
+
+    filtroTremTopo.innerHTML = opcoes;
+    filtroTremTabela.innerHTML = opcoes;
+}
+
+function atualizarTudo() {
+    preencherCards();
+    carregarGrafico();
+}
+
+function sensoresDoTopo() {
+    var lista = [];
+
+    for (var i = 0; i < listaSensores.length; i++) {
+        var s = listaSensores[i];
+
+        if (filtroTremTopo.value == "0" || s.trem_id == filtroTremTopo.value) {
+            lista.push(s);
+        }
+    }
+
+    return lista;
+}
+
+function preencherCards() {
+    var lista = sensoresDoTopo();
+    var total = lista.length;
+    var normais = 0;
+    var alertas = 0;
+    var criticos = 0;
+
+    for (var i = 0; i < lista.length; i++) {
+        if (lista[i].status == "normal") normais++;
+        if (lista[i].status == "alerta") alertas++;
+        if (lista[i].status == "critico") criticos++;
+    }
+
+    document.getElementById("cardTotal").textContent = total;
+    document.getElementById("cardNormais").textContent = normais;
+    document.getElementById("cardNormaisPct").textContent = porcentagem(normais, total) + " do total";
+    document.getElementById("cardAlertas").textContent = alertas;
+    document.getElementById("cardAlertasPct").textContent = porcentagem(alertas, total) + " do total";
+    document.getElementById("cardCriticos").textContent = criticos;
+    document.getElementById("cardCriticosPct").textContent = porcentagem(criticos, total) + " do total";
+
+    desenharRosca(normais, alertas, criticos, total);
+}
+
+function desenharRosca(normais, alertas, criticos, total) {
+    if (typeof Chart == "undefined") {
         return;
     }
 
-    const ctx = document.getElementById("graficoRosca").getContext("2d");
-    graficoRosca = new Chart(ctx, {
+    if (graficoRosca != null) {
+        graficoRosca.destroy();
+    }
+
+    graficoRosca = new Chart(document.getElementById("graficoRosca"), {
         type: "doughnut",
         data: {
-            labels: labels,
-            datasets: [{ data: valores, backgroundColor: cores, borderWidth: 0 }]
+            labels: [
+                "Normais " + porcentagem(normais, total),
+                "Alertas " + porcentagem(alertas, total),
+                "Críticos " + porcentagem(criticos, total)
+            ],
+            datasets: [{
+                data: [normais, alertas, criticos],
+                backgroundColor: ["#22c55e", "#ff8c00", "#d71a1a"],
+                borderColor: "#4e321b"
+            }]
         },
         options: {
-            responsive: true,
             maintainAspectRatio: false,
-            cutout: "55%",
             plugins: {
-                tooltip: { enabled: !vazio },
-                legend: { position: "right", labels: { color: COR_TEXTO, boxWidth: 10, font: { size: 10 } } }
+                legend: { position: "bottom" }
             }
         }
     });
 }
 
-// =====================================================
-// TABELA
-// =====================================================
-function slug(texto) {
-    // "CRÍTICO" -> "critico", "ATENÇÃO" -> "atencao"
-    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+function carregarGrafico() {
+    var url = "../../backend/api/relatorio_ocorrencias.php" +
+        "?inicio=" + campoInicio.value +
+        "&fim=" + campoFim.value +
+        "&trem=" + filtroTremTopo.value;
+
+    fetch(url)
+        .then(function (resposta) {
+            return resposta.json();
+        })
+        .then(function (linhas) {
+            if (linhas.erro) {
+                alert("Erro do banco: " + linhas.erro);
+                return;
+            }
+
+            desenharLinha(linhas);
+        })
+        .catch(function (erro) {
+            alert("Não foi possível carregar as ocorrências: " + erro);
+        });
 }
 
-function desenharTabela() {
-    const tabela = document.querySelector(".box_tabela table");
-    const termo = buscaTabela.value.trim().toLowerCase();
+function desenharLinha(linhas) {
+    var aviso = document.getElementById("avisoLinha");
 
-    const linhas = dados.trens.filter(t =>
-        (tabelaTrem.value === "todos" || String(t.id) === tabelaTrem.value) &&
-        (tabelaStatus.value === "todos" || slug(t.status) === tabelaStatus.value) &&
-        (termo === "" || t.codigo.toLowerCase().includes(termo) || nomeTrem(t.codigo).toLowerCase().includes(termo))
-    );
+    if (graficoLinha != null) {
+        graficoLinha.destroy();
+        graficoLinha = null;
+    }
 
-    const corpo = linhas.length === 0
-        ? `<tr><td colspan="7" style="text-align:center">Nenhum resultado</td></tr>`
-        : linhas.map(t => `
-            <tr>
-                <td><span class="icone-trem">🚆</span>${nomeTrem(t.codigo).toUpperCase()}</td>
-                <td>${t.sensores}</td>
-                <td>${t.criticos}</td>
-                <td>${t.alertas}</td>
-                <td>${t.normais}</td>
-                <td>${t.sensores}</td>
-                <td>
-                    <span class="status-tabela ${slug(t.status)}">${t.status}</span>
-                    <button class="btn-ver" data-id="${t.id}">ver</button>
-                </td>
-            </tr>`).join("");
+    if (linhas.length == 0) {
+        aviso.textContent = "Nenhuma ocorrência neste período.";
+        return;
+    }
 
-    tabela.innerHTML = `
-        <thead>
-            <tr>
-                <th>TREM</th>
-                <th>SENSORES</th>
-                <th>OCORRÊNCIAS CRÍTICAS</th>
-                <th>ALERTAS</th>
-                <th>NORMAIS</th>
-                <th>TOTAL</th>
-                <th>STATUS</th>
-            </tr>
-        </thead>
-        <tbody>${corpo}</tbody>`;
+    if (typeof Chart == "undefined") {
+        aviso.textContent = "Não foi possível carregar a biblioteca de gráficos (verifique a internet).";
+        return;
+    }
+
+    aviso.textContent = "";
+
+    var dias = [];
+    var trens = [];
+
+    for (var i = 0; i < linhas.length; i++) {
+        if (dias.indexOf(linhas[i].dia) == -1) {
+            dias.push(linhas[i].dia);
+        }
+        if (trens.indexOf(linhas[i].trem) == -1) {
+            trens.push(linhas[i].trem);
+        }
+    }
+
+    var valores = {};
+
+    for (var t = 0; t < trens.length; t++) {
+        valores[trens[t]] = [];
+
+        for (var d = 0; d < dias.length; d++) {
+            valores[trens[t]].push(0);
+        }
+    }
+
+
+    for (var j = 0; j < linhas.length; j++) {
+        var posicaoDoDia = dias.indexOf(linhas[j].dia);
+        valores[linhas[j].trem][posicaoDoDia] = Number(linhas[j].qtd);
+    }
+
+
+    var nomesDosDias = [];
+
+    for (var k = 0; k < dias.length; k++) {
+        var partes = dias[k].split("-");
+        nomesDosDias.push(partes[2] + "/" + partes[1] + "/" + partes[0]);
+    }
+
+    var cores = ["#ff8c00", "#00e000", "#1677ff", "#e63946", "#b678ff", "#38bdf8"];
+    var linhasDoGrafico = [];
+
+    for (var n = 0; n < trens.length; n++) {
+        linhasDoGrafico.push({
+            label: trens[n],
+            data: valores[trens[n]],
+            borderColor: cores[n % cores.length],
+            backgroundColor: cores[n % cores.length],
+            tension: 0.4
+        });
+    }
+
+    graficoLinha = new Chart(document.getElementById("graficoLinha"), {
+        type: "line",
+        data: {
+            labels: nomesDosDias,
+            datasets: linhasDoGrafico
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 }
+                }
+            }
+        }
+    });
 }
 
-// =====================================================
-// EVENTOS
-// =====================================================
-// filtros de cima -> buscam dados de novo
-[inputInicio, inputFim, selectTrem].forEach(el => el.addEventListener("change", carregar));
+function montarTabela() {
+    var busca = buscaSensor.value.toLowerCase();
+    var tipo = filtroTipo.value;
+    var tremEscolhido = filtroTremTabela.value;
+    var status = filtroStatus.value;
 
-// filtros da tabela -> só redesenham a tabela
-buscaTabela.addEventListener("input", () => dados && executar(desenharTabela));
-tabelaTrem.addEventListener("change", () => dados && executar(desenharTabela));
-tabelaStatus.addEventListener("change", () => dados && executar(desenharTabela));
+    var grupos = [];
 
-// botão "ver"
-document.querySelector(".box_tabela").addEventListener("click", e => {
-    if (e.target.classList.contains("btn-ver")) {
-        window.location.href = `../html/sensores.html?trem=${e.target.dataset.id}`;
+    for (var i = 0; i < listaSensores.length; i++) {
+        var s = listaSensores[i];
+
+        var achouBusca = s.codigo.toLowerCase().indexOf(busca) != -1;
+        var achouTipo = (tipo == "todos" || s.tipo == tipo);
+        var achouTrem = (tremEscolhido == "0" || s.trem_id == tremEscolhido);
+        var achouStatus = (status == "todos" || s.status == status);
+
+        if (achouBusca && achouTipo && achouTrem && achouStatus) {
+
+            var grupo = null;
+
+            for (var g = 0; g < grupos.length; g++) {
+                if (grupos[g].id == s.trem_id) {
+                    grupo = grupos[g];
+                }
+            }
+
+            if (grupo == null) {
+                grupo = { id: s.trem_id, codigo: s.trem, total: 0, criticos: 0, alertas: 0, normais: 0 };
+                grupos.push(grupo);
+            }
+
+            grupo.total++;
+            if (s.status == "critico") grupo.criticos++;
+            if (s.status == "alerta") grupo.alertas++;
+            if (s.status == "normal") grupo.normais++;
+        }
+    }
+
+    var html = "";
+
+    if (grupos.length == 0) {
+        html = "<tr><td colspan='7'>Nenhum sensor encontrado.</td></tr>";
+    }
+
+    for (var h = 0; h < grupos.length; h++) {
+        var trem = grupos[h];
+
+        var textoStatus = "NORMAL";
+        var cor = "cor-verde";
+
+        if (trem.criticos > 0) {
+            textoStatus = "CRÍTICO";
+            cor = "cor-vermelho";
+        } else if (trem.alertas > 0) {
+            textoStatus = "ATENÇÃO";
+            cor = "cor-amarelo";
+        }
+
+        html = html + "<tr>";
+        html = html + "<td>" + limpar(trem.codigo) + "</td>";
+        html = html + "<td>" + trem.total + "</td>";
+        html = html + "<td>" + trem.criticos + "</td>";
+        html = html + "<td>" + trem.alertas + "</td>";
+        html = html + "<td>" + trem.normais + "</td>";
+        html = html + "<td class='texto_status " + cor + "'>" + textoStatus + "</td>";
+        html = html + "<td><button class='btn_ver' onclick='verTrem(" + trem.id + ")'>ver</button></td>";
+        html = html + "</tr>";
+    }
+
+    document.getElementById("tabelaRelatorio").innerHTML = html;
+}
+
+buscaSensor.addEventListener("input", montarTabela);
+filtroTipo.addEventListener("change", montarTabela);
+filtroTremTabela.addEventListener("change", montarTabela);
+filtroStatus.addEventListener("change", montarTabela);
+
+campoInicio.addEventListener("change", atualizarTudo);
+campoFim.addEventListener("change", atualizarTudo);
+filtroTremTopo.addEventListener("change", atualizarTudo);
+
+function verTrem(idDoTrem) {
+    var html = "";
+    var codigoDoTrem = "";
+
+    for (var i = 0; i < listaSensores.length; i++) {
+        var s = listaSensores[i];
+
+        if (s.trem_id == idDoTrem) {
+            codigoDoTrem = s.trem;
+
+            var leitura = "-";
+            if (s.ultima_leitura != null) {
+                leitura = s.ultima_leitura;
+                if (s.unidade != null) {
+                    leitura = leitura + " " + s.unidade;
+                }
+            }
+
+            html = html + "<tr>";
+            html = html + "<td>" + limpar(s.codigo) + "</td>";
+            html = html + "<td>" + nomeDoTipo(s.tipo) + "</td>";
+            html = html + "<td>" + limpar(leitura) + "</td>";
+            html = html + "<td class='texto_status " + corDoStatus(s.status) + "'>" + nomeDoStatus(s.status) + "</td>";
+            html = html + "</tr>";
+        }
+    }
+
+    document.getElementById("tituloModal").textContent = "Sensores do " + codigoDoTrem;
+    document.getElementById("tabelaModal").innerHTML = html;
+    modal.classList.add("aberto");
+}
+
+function fecharModal() {
+    modal.classList.remove("aberto");
+}
+
+botaoFechar.addEventListener("click", fecharModal);
+
+modal.addEventListener("click", function (evento) {
+    if (evento.target == modal) {
+        fecharModal();
     }
 });
 
-// botão "gerar relatório" -> baixa CSV (abre no Excel)
-document.querySelector(".btn_gerar_relatorio").addEventListener("click", () => {
-    if (!dados) return;
 
-    const linhas = [
-        ["Trem", "Sensores", "Críticos", "Alertas", "Normais", "Total", "Status"],
-        ...dados.trens.map(t => [t.codigo, t.sensores, t.criticos, t.alertas, t.normais, t.sensores, t.status])
-    ];
 
-    const csv = "\uFEFF" + linhas.map(l => l.join(";")).join("\n");
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
-    link.download = `relatorio_${inputInicio.value}_a_${inputFim.value}.csv`;
-    link.click();
-});
+function trocarModo() {
+    modoAdmin = !modoAdmin;
 
-// =====================================================
-// INÍCIO + ATUALIZAÇÃO AUTOMÁTICA (tempo real)
-// =====================================================
-carregar();
-setInterval(() => {
-    if (!document.hidden) carregar();   // não atualiza se a aba estiver em segundo plano
-}, INTERVALO_ATUALIZACAO);
+    if (modoAdmin) {
+        document.body.classList.remove("modo_usuario");
+        botaoModo.textContent = "Visualizando como: Administrador";
+    } else {
+        document.body.classList.add("modo_usuario");
+        botaoModo.textContent = "Visualizando como: Usuário";
+    }
+}
+
+botaoModo.addEventListener("click", trocarModo);
+
+function gerarRelatorio() {
+    if (modoAdmin == false) {
+        return; 
+    }
+
+    window.print();
+}
+
+botaoGerar.addEventListener("click", gerarRelatorio);
+
+colocarDataDeHoje();
+carregarSensores();

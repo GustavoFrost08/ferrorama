@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatórios - TrainFerro</title>
     <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="stylesheet" href="../css/relatorios.css">
+    <link rel="stylesheet" href="../css/relatorios.css?v=1">
 </head>
 <body>
 
@@ -23,105 +23,160 @@
         </nav>
 
         <div>
-            <button class="btn-conta">Minha Conta</button>
-        </div>
+            <button class="btn-conta" onclick="window.location.href='minha-conta.html'">
+              Minha Conta
+            </button>
     </header>
 
-    <main class="box_maior">
+    <main class="container_esq">
 
-        <div class="container_esq">
+        <div class="filtros_topo">
+            <input type="date" id="dataInicio" value="2026-05-01">
+            <span>→</span>
+            <input type="date" id="dataFim">
 
-            <!-- filtros superiores -->
-            <div class="filtros_topo">
-                <input type="date" id="dataInicio" class="input_data">
-                <input type="date" id="dataFim" class="input_data">
-                <select class="select_filtro">
-                    <option value="trem">Por trem</option>
+            <select id="filtroTremTopo">
+                <option value="0">Todos os trens</option>
+            </select>
+
+            <button type="button" class="btn-conta btn_modo_rel" id="btnModo">Visualizando como: Administrador</button>
+        </div>
+
+        <div class="linha_cima">
+
+            <div class="frota">
+                <div class="img_status ic_total">🚆</div>
+                <div class="text_frota">
+                    <p class="titulo-frota">Total de sensores</p>
+                    <p class="num-frota" id="cardTotal">0</p>
+                    <p class="sub-frota">Cadastrados</p>
+                </div>
+            </div>
+
+            <div class="frota">
+                <div class="img_status status-verde">✓</div>
+                <div class="text_frota">
+                    <p class="titulo-frota">Sensores normais</p>
+                    <p class="num-frota cor-verde" id="cardNormais">0</p>
+                    <p class="sub-frota" id="cardNormaisPct">0% do total</p>
+                </div>
+            </div>
+
+            <div class="frota">
+                <div class="img_status status-amarelo">!</div>
+                <div class="text_frota">
+                    <p class="titulo-frota">Sensores em alerta</p>
+                    <p class="num-frota cor-amarelo" id="cardAlertas">0</p>
+                    <p class="sub-frota" id="cardAlertasPct">0% do total</p>
+                </div>
+            </div>
+
+            <div class="frota">
+                <div class="img_status status-vermelho">X</div>
+                <div class="text_frota">
+                    <p class="titulo-frota">Sensores críticos</p>
+                    <p class="num-frota cor-vermelho" id="cardCriticos">0</p>
+                    <p class="sub-frota" id="cardCriticosPct">0% do total</p>
+                </div>
+            </div>
+
+            <button type="button" class="btn_gerar so_admin" id="btnGerar">📄 GERAR RELATÓRIO</button>
+
+        </div>
+
+
+        <div class="linha_graficos">
+
+            <div class="caixa_grafico grafico_linha">
+                <h2>OCORRÊNCIAS POR DIA <span class="sub_titulo">(dias com ocorrências no período)</span></h2>
+                <div class="area_grafico">
+                    <canvas id="graficoLinha"></canvas>
+                </div>
+                <p class="aviso_grafico" id="avisoLinha"></p>
+            </div>
+
+            <div class="caixa_grafico grafico_rosca">
+                <h2>SENSORES POR SITUAÇÃO</h2>
+                <div class="area_grafico">
+                    <canvas id="graficoRosca"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="container_baixo">
+            <h2>TODOS OS SENSORES</h2>
+
+            <div class="filtros_tabela">
+                <input type="text" id="buscaSensor" placeholder="🔍 Buscar por ID do sensor...">
+
+                <select id="filtroTipo">
+                    <option value="todos">Todos os tipos</option>
+                    <option value="temperatura">Temperatura</option>
+                    <option value="vibracao">Vibração</option>
+                    <option value="velocidade">Velocidade</option>
+                    <option value="pressao">Pressão</option>
                 </select>
-                <select class="select_filtro" id="filtroTrem">
-                    <option value="todos">Todos os trens</option>
+
+                <select id="filtroTremTabela">
+                    <option value="0">Todos os trens</option>
+                </select>
+
+                <select id="filtroStatus">
+                    <option value="todos">Todos os status</option>
+                    <option value="normal">Normal</option>
+                    <option value="alerta">Alerta</option>
+                    <option value="critico">Crítico</option>
                 </select>
             </div>
 
-            <!-- cards de status + botão de gerar relatório -->
-            <div class="linha_cima">
-                <div class="frota">
-                    <div class="img_status"></div>
-                    <div class="text_frota"></div>
-                </div>
-                <div class="frota">
-                    <div class="img_status"></div>
-                    <div class="text_frota"></div>
-                </div>
-                <div class="frota">
-                    <div class="img_status"></div>
-                    <div class="text_frota"></div>
-                </div>
-                <div class="frota">
-                    <div class="img_status"></div>
-                    <div class="text_frota"></div>
-                </div>
-
-                <button class="btn_gerar_relatorio">
-                    <span class="icon_relatorio">📄</span>
-                    GERAR RELATÓRIO
-                </button>
+            <div class="box_tabela">
+                <table class="tabela-frota">
+                    <thead>
+                        <tr>
+                            <th>Trem</th>
+                            <th>Sensores</th>
+                            <th>Ocorrências críticas</th>
+                            <th>Alertas</th>
+                            <th>Normais</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaRelatorio">
+                        <tr>
+                            <td colspan="7">Carregando...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-
-            <!-- gráfico de ocorrências + gráfico de rosca -->
-            <div class="linha_graficos">
-
-                <!-- gráfico de linha -->
-                <div class="grafico_box_linha">
-                    <div class="grafico_header">
-                        <h2>OCORRÊNCIAS POR DIA</h2>
-                    </div>
-                    <div class="area_grafico_linha">
-                        <canvas id="graficoOcorrencias"></canvas>
-                    </div>
-                </div>
-
-                <!-- gráfico de rosca -->
-                <div class="grafico_box_rosca">
-                    <h2>OCORRÊNCIAS POR TIPO</h2>
-                    <div class="area_grafico_rosca">
-                        <canvas id="graficoRosca"></canvas>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- tabela de resumo e filtros de busca -->
-            <div class="container_baixo">
-                <div class="tabela_header_filtros">
-                    <h2>TODOS OS SENSORES</h2>
-
-                    <div class="box_filtros">
-                        <input type="text" id="buscaTabela" placeholder="Buscar por trem..." class="input_busca">
-                        <select id="tabelaFiltroTrem">
-                            <option value="todos">Todos os trens</option>
-                        </select>
-                        <select id="tabelaFiltroStatus">
-                            <option value="todos">Todos os status</option>
-                            <option value="normal">Normal</option>
-                            <option value="atencao">Atenção</option>
-                            <option value="critico">Crítico</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="box_tabela">
-                    <table>
-                        <!-- preenchida pelo JS -->
-                    </table>
-                </div>
-            </div>
-
         </div>
 
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../js/relatorios.js"></script>
+    <div class="modal_fundo" id="modalTrem">
+        <div class="modal_caixa">
+            <button class="modal_fechar" id="btnFechar" type="button">✕</button>
+            <h3 id="tituloModal">Sensores do trem</h3>
+
+            <div class="modal_lista">
+                <table class="tabela-frota">
+                    <thead>
+                        <tr>
+                            <th>Sensor</th>
+                            <th>Tipo</th>
+                            <th>Última leitura</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaModal">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+    <script src="../js/relatorios.js?v=1"></script>
 </body>
 </html>

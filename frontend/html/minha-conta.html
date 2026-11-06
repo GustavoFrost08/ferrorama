@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Conta - TrainFerro</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/minha-conta.css">
+</head>
+
+<body>
+
+<header class="hdr">
+    <div>
+        <img src="../assets/Logo.png" alt="Logo">
+    </div>
+
+    <nav class="tabelas-nav">
+        <a href="dashboard.html" class="tab-btn">Home</a>
+        <a href="trens.html" class="tab-btn">Trens</a>
+        <a href="sensores.html" class="tab-btn">Sensores</a>
+        <a href="relatorios.html" class="tab-btn">Relatórios</a>
+        <a href="usuarios.html" class="tab-btn">Usuários</a>
+    </nav>
+
+    <div>
+        <button class="btn-conta">Minha Conta</button>
+    </div>
+</header>
+
+<main class="pagina-conta">
+
+    <div class="cabecalho-conta">
+        <h2>MINHA CONTA</h2>
+        <a href="dashboard.html">Voltar</a>
+    </div>
+
+    <div class="perfil-conta">
+        <div class="icone-perfil">👤</div>
+        <div>
+            <h2 id="nomeCompleto">Carregando...</h2>
+            <span id="perfilUsuario"></span>
+        </div>
+    </div>
+
+    <form id="formConta">
+
+        <div class="campos-conta">
+            <div>
+                <label>Nome</label>
+                <input type="text" id="nome" required>
+            </div>
+
+            <div>
+                <label>Sobrenome</label>
+                <input type="text" id="sobrenome" required>
+            </div>
+
+            <div>
+                <label>E-mail</label>
+                <input type="email" id="email" required>
+            </div>
+
+            <div>
+                <label>Telefone</label>
+                <input type="text" id="telefone" required>
+            </div>
+        </div>
+
+        <div class="informacoes-conta">
+            <p>Perfil: <strong id="perfilInfo"></strong></p>
+            <p>Status: <strong id="statusInfo"></strong></p>
+        </div>
+
+        <div class="botoes-conta">
+            <button type="submit" id="btnSalvar">Salvar alterações</button>
+            <button type="button" id="btnSair">Sair da conta</button>
+        </div>
+
+    </form>
+
+</main>
+
+<script src="../js/minha-conta.js"></script>
+
+</body>
+</html>

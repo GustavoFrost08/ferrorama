@@ -1,5 +1,7 @@
 <?php
 
+session_start(); 
+
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once "conexao.php";
@@ -70,6 +72,8 @@ if (!password_verify($senha, $usuario["senha"])) {
     ]);
     exit;
 }
+
+$_SESSION["usuario_id"] = $usuario["id"];
 
 unset($usuario["senha"]);
 

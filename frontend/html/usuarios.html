@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Usuários - TrainFerro</title>
     <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="stylesheet" href="../css/usuarios.css">
+    <link rel="stylesheet" href="../css/usuarios.css?v=1">
 </head>
 <body>
 
     <header class="hdr">
         <div>
-            <img src="../assets/Logo.png" alt="Logo TrainFerro">
+            <img src="../assets/logo.png" alt="Logo TrainFerro">
         </div>
 
         <nav class="tabelas-nav">
@@ -23,79 +23,166 @@
         </nav>
 
         <div>
-            <button class="btn-conta">Minha Conta</button>
+            <button class="btn-conta" onclick="window.location.href='minha-conta.html'">
+    Minha Conta
+</button>
         </div>
     </header>
 
-    <main class="box_maior">
+    <main>
 
-        <!-- lado esquerdo -->
-        <div class="container_esq">
-
-            <!-- titulo da pagina e botao de acao -->
-            <div class="header_pagina">
-                <div class="titulo_pagina">
-                    <h2>Usuários do sistema</h2>
-                    <p>Gerencie acessos e permissões da plataforma ferroviária</p>
-                </div>
-
-                <button class="btn_add_usuario">
-                    <span class="icon_user">+</span> Adicionar usuário
-                </button>
+        <!-- título e botões do topo -->
+        <div class="topo_usuarios">
+            <div class="titulo_usuarios">
+                <h2>Usuários do sistema</h2>
+                <p>Gerencie acessos e permissões da plataforma ferroviária</p>
             </div>
 
-            <!-- cards de resumo da banca -->
-            <div class="linha_cima">
-                <!-- conteúdo dos cards preenchidos-->
-                <div class="frota">
-                    <div class="img_status"><img src="" alt=""></div>
-                    <div class="text_frota"></div>
-                </div>
-                <div class="frota">
-                    <div class="img_status"><img src="" alt=""></div>
-                    <div class="text_frota"></div>
-                </div>
-                <div class="frota">
-                    <div class="img_status"><img src="" alt=""></div>
-                    <div class="text_frota"></div>
-                </div>
-                <div class="frota">
-                    <div class="img_status"><img src="" alt=""></div>
-                    <div class="text_frota"></div>
+            <div class="botoes_topo">
+                <button type="button" class="btn_modo" id="btnModo">Visualizando como: Administrador</button>
+                <!-- "so_admin" = some quando estiver na visão de usuário -->
+                <button type="button" class="btn_add_usuario so_admin" id="btnNovoUsuario">+ Adicionar usuário</button>
+            </div>
+        </div>
+
+        <!-- cards de totais -->
+        <div class="cards_usuarios">
+
+            <div class="frota">
+                <div class="img_status ic_total">👥</div>
+                <div class="text_frota">
+                    <p class="titulo-frota">Total de usuários</p>
+                    <p class="num-frota" id="cardTotal">0</p>
+                    <p class="sub-frota">Cadastrados no sistema</p>
                 </div>
             </div>
 
-            <!-- filtros e tabelas -->
-            <div class="container_baixo">
-
-                <!-- filtros de pesquisa -->
-                <div class="box_filtros_usuarios">
-                    <input type="text" placeholder="Buscar por nome ou e-mail..." class="input_busca">
-                    <select><option value="">Todos</option></select>
-                    <select><option value="">Todos</option></select>
-                    <button class="btn_filtrar">Filtrar</button>
+            <div class="frota">
+                <div class="img_status ic_admin">🛡</div>
+                <div class="text_frota">
+                    <p class="titulo-frota">Administradores</p>
+                    <p class="num-frota" id="cardAdmins">0</p>
+                    <p class="sub-frota" id="cardAdminsPct">0% do total</p>
                 </div>
-
-                <!-- tabela de usuarios -->
-                <div class="box_tabela">
-                    <table>
-                        <!-- tabela e cabeçalhos gerados dinamicamente-->
-                    </table>
-                </div>
-
-                <!-- rodapé da tabela / paginaaoo -->
-                <div class="rodape_tabela">
-                    <div class="paginacao">
-                        <!-- paginação renderizada-->
-                    </div>
-                </div>
-
             </div>
 
-        </div> <!-- fim container_esq -->
+            <div class="frota">
+                <div class="img_status ic_operador">📦</div>
+                <div class="text_frota">
+                    <p class="titulo-frota">Operadores</p>
+                    <p class="num-frota" id="cardOperadores">0</p>
+                    <p class="sub-frota" id="cardOperadoresPct">0% do total</p>
+                </div>
+            </div>
+
+            <div class="frota">
+                <div class="img_status status-verde">✓</div>
+                <div class="text_frota">
+                    <p class="titulo-frota">Usuários ativos</p>
+                    <p class="num-frota" id="cardAtivos">0</p>
+                    <p class="sub-frota" id="cardAtivosPct">0% do total</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- filtros -->
+        <div class="barra_filtros">
+            <form id="formFiltro">
+                <input type="text" id="campoBusca" placeholder="🔍  Buscar por nome ou e-mail...">
+
+                <select id="filtroPerfil">
+                    <option value="todos">Todos os perfis</option>
+                    <option value="admin">Admin</option>
+                    <option value="operador">Operador</option>
+                    <option value="comum">Comum</option>
+                </select>
+
+                <select id="filtroStatus">
+                    <option value="todos">Todos os status</option>
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
+                </select>
+
+                <button type="submit" class="btn_filtrar">Filtrar</button>
+            </form>
+        </div>
+
+        <!-- tabela -->
+        <div class="caixa_usuarios">
+            <table class="tabela-frota">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Perfil de acesso</th>
+                        <th>Status</th>
+                        <th class="so_admin">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaUsuarios">
+                    <tr>
+                        <td colspan="5">Carregando...</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="rodape_tabela">
+                <span id="textoMostrando"></span>
+                <div id="paginacao"></div>
+            </div>
+        </div>
 
     </main>
 
-    <script src="../js/usuarios.js"></script>
+    <!-- Janela Adicionar / Editar usuário -->
+    <div class="modal_fundo" id="modalUsuario">
+        <div class="modal_caixa">
+            <button class="modal_fechar" id="btnFecharModal" type="button">✕</button>
+            <h3 id="tituloModal">Novo usuário</h3>
+
+            <form id="formUsuario">
+                <!-- guarda o id do usuário quando estamos editando -->
+                <input type="hidden" name="id" id="campoId">
+
+                <div class="modal_colunas">
+
+                    <div class="modal_coluna">
+                        <label>Nome</label>
+                        <input type="text" name="nome" id="campoNome" required>
+
+                        <label>Sobrenome</label>
+                        <input type="text" name="sobrenome" id="campoSobrenome" required>
+
+                        <label>E-mail</label>
+                        <input type="email" name="email" id="campoEmail" required>
+                    </div>
+
+                    <div class="modal_coluna">
+                        <label>Senha</label>
+                        <input type="password" name="senha" id="campoSenha">
+
+                        <label>Perfil de acesso</label>
+                        <select name="perfil" id="campoPerfil" required>
+                            <option value="comum">Comum</option>
+                            <option value="operador">Operador</option>
+                            <option value="admin">Admin</option>
+                        </select>
+
+                        <label>Status</label>
+                        <select name="status" id="campoStatus" required>
+                            <option value="ativo">Ativo</option>
+                            <option value="inativo">Inativo</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn_add_usuario btn_largo" id="btnSalvar">Adicionar usuário</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/usuarios.js?v=1"></script>
 </body>
 </html>
