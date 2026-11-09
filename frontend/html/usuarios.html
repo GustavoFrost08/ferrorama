@@ -31,7 +31,6 @@
 
     <main>
 
-        <!-- título e botões do topo -->
         <div class="topo_usuarios">
             <div class="titulo_usuarios">
                 <h2>Usuários do sistema</h2>
@@ -45,7 +44,6 @@
             </div>
         </div>
 
-        <!-- cards de totais -->
         <div class="cards_usuarios">
 
             <div class="frota">
@@ -86,7 +84,6 @@
 
         </div>
 
-        <!-- filtros -->
         <div class="barra_filtros">
             <form id="formFiltro">
                 <input type="text" id="campoBusca" placeholder="🔍  Buscar por nome ou e-mail...">
@@ -108,7 +105,7 @@
             </form>
         </div>
 
-        <!-- tabela -->
+        <!-- TABELA -->
         <div class="caixa_usuarios">
             <table class="tabela-frota">
                 <thead>
@@ -135,14 +132,12 @@
 
     </main>
 
-    <!-- Janela Adicionar / Editar usuário -->
     <div class="modal_fundo" id="modalUsuario">
         <div class="modal_caixa">
             <button class="modal_fechar" id="btnFecharModal" type="button">✕</button>
             <h3 id="tituloModal">Novo usuário</h3>
 
             <form id="formUsuario">
-                <!-- guarda o id do usuário quando estamos editando -->
                 <input type="hidden" name="id" id="campoId">
 
                 <div class="modal_colunas">

@@ -1,4 +1,5 @@
 <?php
+
 ini_set("display_errors", 0);
 
 require "conexao.php";
@@ -8,12 +9,12 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
     exit;
 }
 
-$nome      = trim($_POST["nome"]);
+$nome = trim($_POST["nome"]);
 $sobrenome = trim($_POST["sobrenome"]);
-$email     = trim($_POST["email"]);
-$senha     = $_POST["senha"];
-$perfil    = $_POST["perfil"];
-$status    = $_POST["status"];
+$email = trim($_POST["email"]);
+$senha = $_POST["senha"];
+$perfil = $_POST["perfil"];
+$status = $_POST["status"];
 
 if ($nome == "" || $sobrenome == "" || $email == "" || $senha == "") {
     echo json_encode(["sucesso" => false, "erro" => "Preencha todos os campos"]);
@@ -47,6 +48,8 @@ $busca->store_result();
 
 if ($busca->num_rows > 0) {
     echo json_encode(["sucesso" => false, "erro" => "Já existe um usuário com esse e-mail"]);
+    $busca->close();
+    $conn->close();
     exit;
 }
 
@@ -59,11 +62,6 @@ $sql = "INSERT INTO usuarios (nome, sobrenome, email, senha, perfil, status)
 
 $comando = $conn->prepare($sql);
 
-if ($comando === false) {
-    echo json_encode(["sucesso" => false, "erro" => $conn->error]);
-    exit;
-}
-
 $comando->bind_param("ssssss", $nome, $sobrenome, $email, $senhaCriptografada, $perfil, $status);
 
 if ($comando->execute()) {
@@ -74,4 +72,5 @@ if ($comando->execute()) {
 
 $comando->close();
 $conn->close();
+
 ?>

@@ -11,17 +11,16 @@ body {
     overflow-x: hidden;
 }
 
-/* Container Principal Split-Screen */
 .container {
     display: flex;
     width: 100%;
     min-height: 100vh;
 }
 
-/* --- LADO ESQUERDO (Escuro) --- */
+
 .esquerda {
     flex: 1.3;
-    background-color:  #3d2514; /* Tom marrom escuro */
+    background-color:  #3d2514; 
     color: #FFFFFF;
     padding: 40px 60px;
     display: flex;
@@ -51,7 +50,7 @@ body {
 }
 
 .content h1 span {
-    color: #9C7A68; /* Destaque marrom suave para "tempo real." */
+    color: #9C7A68; 
 }
 
 .banner-img img {
@@ -60,10 +59,10 @@ body {
     object-fit: contain;
 }
 
-/* --- LADO DIREITO (Claro) --- */
+
 .direita {
     flex: 1;
-    background-color: #a38c7a; /* Tom marrom claro/médio */
+    background-color: #a38c7a;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -96,7 +95,7 @@ body {
     padding: 14px 18px;
     border-radius: 25px;
     border: none;
-    background-color: rgba(255, 255, 255, 0.3); /* Transparência suave dos inputs */
+    background-color: rgba(255, 255, 255, 0.3); 
     color: #FFFFFF;
     font-size: 0.9rem;
     outline: none;
@@ -112,7 +111,7 @@ body {
     padding: 12px;
     border-radius: 25px;
     border: none;
-    background-color: #4A2B1D; /* Marrom escuro */
+    background-color: #4A2B1D; 
     color: #FFFFFF;
     font-size: 1rem;
     cursor: pointer;
@@ -160,7 +159,7 @@ body {
     font-size: 1.1rem;
 }
 
-/* Responsividade para telas menores */
+
 @media (max-width: 900px) {
     .container {
         flex-direction: column;

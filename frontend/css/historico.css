@@ -1,4 +1,4 @@
-/* Caixa grande que guarda a página toda */
+
 .pagina_hist {
     background-color: var(--bg-card);
     border-radius: 8px;
@@ -6,7 +6,7 @@
     margin-top: 20px;
 }
 
-/* Título à esquerda e "voltar" à direita */
+
 .hist_topo {
     display: flex;
     justify-content: space-between;
@@ -28,14 +28,14 @@
     text-decoration: underline;
 }
 
-/* Lista de eventos, um embaixo do outro */
+
 #lista-historico {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-/* Cada cartão de evento */
+
 .hist_item {
     border: 1px solid var(--border-color);
     border-radius: 9px;
@@ -56,7 +56,7 @@
     font-size: 0.8rem;
 }
 
-/* linha de baixo: Trem + data e hora */
+
 .hist_info {
     color: var(--text-secondary);
     font-size: 0.7rem;

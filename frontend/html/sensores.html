@@ -6,6 +6,7 @@
     <title>Sensores - TrainFerro</title>
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/sensores.css">
+    <link rel="stylesheet" href="../css/sensores_admin.css?v=1">
 </head>
 
 <body>
@@ -29,6 +30,11 @@
     </a>
 </div>
 </header>
+
+<div class="barra_topo">
+    <button type="button" class="btn_modo" id="btnModo">Visualizando como: Administrador</button>
+    <button type="button" class="btn_add_sensor so_admin" id="btnNovoSensor">+ Adicionar sensor</button>
+</div>
 
 <main class="box_maior">
 
@@ -159,7 +165,56 @@
 
 </main>
 
+<div class="modal_fundo" id="modalSensor">
+    <div class="modal_caixa">
+        <button class="modal_fechar" id="btnFecharModal" type="button">✕</button>
+        <h3>Novo Sensor</h3>
+
+        <form id="formSensor">
+            <div class="modal_colunas">
+
+                <!-- COL ESQUERDA -->
+                <div class="modal_coluna">
+                    <label>Código do sensor</label>
+                    <input type="text" name="codigo" maxlength="10" placeholder="Ex.: S022" required>
+
+                    <label>Tipo</label>
+                    <select name="tipo" id="campoTipo" required>
+                        <option value="">Selecionar...</option>
+                        <option value="temperatura">Temperatura</option>
+                        <option value="vibracao">Vibração</option>
+                        <option value="velocidade">Velocidade</option>
+                        <option value="pressao">Pressão</option>
+                    </select>
+                    <small id="textoUnidade"></small>
+
+                    <label>Trem vinculado</label>
+                    <select name="trem_id" id="campoTrem" required>
+                        <option value="">Carregando...</option>
+                    </select>
+                </div>
+
+                <!-- COL DIREITA -->
+                <div class="modal_coluna">
+                    <label>Limite mínimo</label>
+                    <input type="number" name="limite_min" step="0.01" required>
+
+                    <label>Limite máximo</label>
+                    <input type="number" name="limite_max" step="0.01" required>
+
+                    <label>Leitura atual</label>
+                    <input type="number" name="ultima_leitura" step="0.01" required>
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn_add_sensor btn_largo">+ Adicionar Sensor</button>
+        </form>
+    </div>
+</div>
+
 <script src="../js/sensores.js"></script>
+<script src="../js/sensores_admin.js?v=1"></script>
 
 </body>
 </html>

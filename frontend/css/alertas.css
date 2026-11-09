@@ -19,7 +19,7 @@ body {
     padding: 20px;
 }
 
-/* HEADER */
+
 
 .hdr {
     display: flex;
@@ -58,7 +58,7 @@ body {
     cursor: pointer;
 }
 
-/* CONTAINER */
+
 
 .container {
     max-width: 1200px;
@@ -91,7 +91,7 @@ body {
     border-radius: 20px;
 }
 
-/* FILTROS */
+
 
 .filtros {
     display: flex;
@@ -113,7 +113,7 @@ body {
     color: white;
 }
 
-/* ALERTAS */
+
 
 .lista-alertas {
     display: flex;

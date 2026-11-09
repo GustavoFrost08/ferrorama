@@ -14,7 +14,6 @@ var campoSenha = document.getElementById("campoSenha");
 var campoPerfil = document.getElementById("campoPerfil");
 var campoStatus = document.getElementById("campoStatus");
 
-// ===== Variáveis =====
 var listaUsuarios = [];   
 var listaFiltrada = [];    
 var paginaAtual = 1;
@@ -46,8 +45,6 @@ function porcentagem(parte, total) {
     return valor.replace(".", ",") + "%";  
 }
 
-
-// ===== Buscar os usuários =====
 function carregarUsuarios(irParaUltima) {
     fetch("../../backend/api/usuarios.php")
         .then(function (resposta) {
@@ -74,8 +71,6 @@ function carregarUsuarios(irParaUltima) {
         });
 }
 
-
-// ===== Cards de cima  =====
 function preencherCards() {
     var total = listaUsuarios.length;
     var admins = 0;
@@ -97,8 +92,6 @@ function preencherCards() {
     document.getElementById("cardAtivosPct").textContent = porcentagem(ativos, total) + " do total";
 }
 
-
-// ===== Filtros =====
 function aplicarFiltro() {
     var busca = document.getElementById("campoBusca").value.toLowerCase();
     var perfil = document.getElementById("filtroPerfil").value;
@@ -128,8 +121,6 @@ formFiltro.addEventListener("submit", function (evento) {
     mostrarTabela();
 });
 
-
-// ===== tabela =====
 function mostrarTabela() {
     var total = listaFiltrada.length;
 
@@ -187,8 +178,6 @@ function mostrarTabela() {
     montarPaginacao();
 }
 
-
-// ===== < 1 2 3 > =====
 function montarPaginacao() {
     var html = "";
 
@@ -216,8 +205,6 @@ function irParaPagina(numero) {
     mostrarTabela();
 }
 
-
-// ===== Trocar Adm =====
 function trocarModo() {
     modoAdmin = !modoAdmin;
 
@@ -232,8 +219,6 @@ function trocarModo() {
 
 botaoModo.addEventListener("click", trocarModo);
 
-
-// ===== Editar =====
 function abrirModalNovo() {
     if (modoAdmin == false) {
         return; 
@@ -287,8 +272,6 @@ modal.addEventListener("click", function (evento) {
     }
 });
 
-
-// ===== Salvar =====
 formulario.addEventListener("submit", function (evento) {
     evento.preventDefault();
 
@@ -329,8 +312,6 @@ formulario.addEventListener("submit", function (evento) {
         });
 });
 
-
-// ===== Ativare desativar usuário =====
 function alternarStatus(posicao) {
     if (modoAdmin == false) {
         return; 

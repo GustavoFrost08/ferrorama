@@ -1,4 +1,4 @@
-/* Reset de estilos básicos */
+
 * {
   margin: 0;
   padding: 0;
@@ -27,7 +27,7 @@ body {
   padding: 20px;
 }
 
-/* container centralizado */
+
 .container {
   background-color: var(--bg-card);
   width: 100%;
@@ -38,7 +38,7 @@ body {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* botão voltar */
+
 .botao-voltar {
   background: none;
   border: 1px solid var(--border-color);
@@ -72,7 +72,7 @@ body {
   margin-bottom: 30px;
 }
 
-/* formulário e espaçamentos */
+
 .form-cadastro {
   display: flex;
   flex-direction: column;
@@ -91,7 +91,7 @@ label {
   font-weight: 600;
 }
 
-/* inputs e selects padronizados */
+
 input[type="text"],
 input[type="password"],
 select {
@@ -111,7 +111,7 @@ select:focus {
   border-color: var(--text-primary);
 }
 
-/* data de nascimento */
+
 .dob-group {
   display: flex;
   flex-direction: column;
@@ -152,7 +152,7 @@ select:focus {
   padding-right: 35px;
 }
 
-/* texto de termos e links */
+
 .terms-text {
   color: var(--text-primary);
   font-size: 13px;
@@ -172,7 +172,7 @@ select:focus {
   text-decoration: underline;
 }
 
-/* botões */
+
 .btn-submit {
   background-color: var(--btn-primary-bg);
   color: var(--btn-primary-text);

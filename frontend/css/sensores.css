@@ -1,6 +1,4 @@
-/* ============================= */
-/* ORGANIZAÇÃO DA PÁGINA         */
-/* ============================= */
+
 
 .box_maior {
     display: grid;
@@ -20,9 +18,7 @@
 }
 
 
-/* ============================= */
-/* CARDS                         */
-/* ============================= */
+
 
 .linha_cima {
     grid-column: 1 / 3;
@@ -107,9 +103,7 @@
 }
 
 
-/* ============================= */
-/* GRÁFICO                       */
-/* ============================= */
+
 
 .grafico_box {
     grid-column: 1;
@@ -200,9 +194,7 @@
 }
 
 
-/* ============================= */
-/* ALERTAS                       */
-/* ============================= */
+
 
 .alerta_box {
     grid-column: 2;
@@ -252,9 +244,6 @@
 
     overflow-y: auto;
 }
-
-
-/* ALERTA INDIVIDUAL */
 
 .alerta_item {
     display: flex;
@@ -334,9 +323,7 @@
 }
 
 
-/* ============================= */
-/* TABELA                        */
-/* ============================= */
+
 
 .container_baixo {
     grid-column: 1 / 3;
@@ -396,7 +383,7 @@ select,
 }
 
 
-/* TABELA */
+
 
 .box_tabela {
     width: 100%;
@@ -453,9 +440,7 @@ select,
 }
 
 
-/* ============================= */
-/* RESPONSIVO                    */
-/* ============================= */
+
 
 @media (max-width: 1000px) {
 
@@ -517,8 +502,6 @@ select,
     }
 
 }
-
-/* REMOVE O FUNDO AMARELO DOS ALERTAS */
 
 .alerta_item.alerta {
     background-color: transparent !important;

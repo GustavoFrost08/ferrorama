@@ -1,17 +1,12 @@
 <?php
 
-header('Content-Type: application/json; charset=utf-8');
+header("Content-Type: application/json; charset=utf-8");
 
-require_once 'conexao.php';
+require "conexao.php";
 
-$sql = "SELECT 
-            id,
-            titulo,
-            descricao,
-            criado_em
+$sql = "SELECT id, titulo, descricao, criado_em
         FROM alertas
-        WHERE gravidade = 'critico'
-        AND resolvido = 0
+        WHERE gravidade = 'critico' AND resolvido = 0
         ORDER BY criado_em DESC
         LIMIT 5";
 
@@ -24,4 +19,7 @@ while ($alerta = $resultado->fetch_assoc()) {
 }
 
 echo json_encode($alertas, JSON_UNESCAPED_UNICODE);
+
+$conn->close();
+
 ?>

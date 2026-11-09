@@ -1,7 +1,6 @@
 <?php
 require "conexao.php";
 
-// pega os 5 eventos mais recentes
 $sql = "SELECT titulo, descricao, DATE_FORMAT(criado_em, '%H:%i') AS hora
         FROM eventos
         ORDER BY criado_em DESC

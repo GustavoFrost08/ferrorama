@@ -2,13 +2,32 @@
 var modal = document.getElementById("modalTrem");
 var botaoAbrir = document.getElementById("btnAbrir");
 var botaoFechar = document.getElementById("btnFechar");
+var botaoModo = document.getElementById("btnModo");
 var formulario = document.getElementById("formTrem");
 
-// guarda os trens que vieram do banco
 var listaTrens = [];
 
-// ===== Abrir e fechar a janela =====
+var modoAdmin = true;
+
+function trocarModo() {
+    modoAdmin = !modoAdmin;
+
+    if (modoAdmin) {
+        document.body.classList.remove("modo_usuario");
+        botaoModo.textContent = "Visualizando como: Administrador";
+    } else {
+        document.body.classList.add("modo_usuario");
+        botaoModo.textContent = "Visualizando como: Usuário";
+    }
+}
+
+botaoModo.addEventListener("click", trocarModo);
+
 function abrirModal() {
+    if (modoAdmin == false) {
+        return; 
+    }
+
     modal.classList.add("aberto");
 }
 
@@ -19,19 +38,15 @@ function fecharModal() {
 botaoAbrir.addEventListener("click", abrirModal);
 botaoFechar.addEventListener("click", fecharModal);
 
-// clicar no fundo escuro (fora da caixa) também fecha
 modal.addEventListener("click", function (evento) {
     if (evento.target == modal) {
         fecharModal();
     }
 });
 
-// ===== Enviar o formulário para o PHP =====
 formulario.addEventListener("submit", function (evento) {
-    // impede a página de recarregar
     evento.preventDefault();
 
-    // junta todos os campos (usa o "name" de cada um)
     var dados = new FormData(formulario);
 
     fetch("../../backend/api/adicionar_trem.php", {
@@ -57,14 +72,12 @@ formulario.addEventListener("submit", function (evento) {
         });
 });
 
-// ===== Buscar os trens no banco e mostrar na tabela =====
 function carregarTrens() {
     fetch("../../backend/api/trens.php")
         .then(function (resposta) {
             return resposta.json();
         })
         .then(function (trens) {
-            // se o PHP mandou um erro, mostra e para
             if (trens.erro) {
                 alert("Erro do banco: " + trens.erro);
                 return;
@@ -122,7 +135,6 @@ function contarStatus() {
     document.getElementById("parados").textContent = parados;
 }
 
-// ===== Mostrar detalhes do trem clicado =====
 function mostrarDetalhes(posicao) {
     var trem = listaTrens[posicao];
 
@@ -134,7 +146,6 @@ function mostrarDetalhes(posicao) {
         "Cadastro: " + trem.data_cadastro;
 }
 
-// ===== Mostrar o histórico recente (eventos do banco) =====
 function carregarHistorico() {
     fetch("../../backend/api/historico.php")
         .then(function (resposta) {
@@ -167,6 +178,6 @@ function carregarHistorico() {
             alert("Não foi possível carregar o histórico. Veja o Console (F12).");
         });
 }
-// roda assim que a página abre
+
 carregarTrens();
 carregarHistorico();

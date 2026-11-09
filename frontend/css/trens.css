@@ -1,4 +1,10 @@
-/* Título e Subtítulo da Página*/
+
+.titulo_pagina {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
 .titulo_pagina h2 {
     color: var(--text-secondary);
     font-size: 0.85rem;
@@ -14,14 +20,34 @@
     margin-bottom: 15px;
 }
 
-/* Instrução acima da tabela */
+
+.btn_modo {
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 10px 18px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.btn_modo:hover {
+    opacity: 0.8;
+}
+
+
+.modo_usuario .so_admin {
+    display: none;
+}
+
+
 .instrucao {
     color: var(--text-secondary);
     font-size: 0.85rem;
     margin-bottom: 12px;
 }
 
-/* Botão: Adicionar Novo Trem */
+
 .btn_add_trem {
     background-color: var(--btn-primary-bg);
     color: var(--btn-primary-text);
@@ -39,7 +65,7 @@
     opacity: 0.9;
 }
 
-/* Card: Detalhes do Trem Selecionado */
+
 .detalhes_trem_box {
     background-color: var(--bg-card);
     border-radius: 8px;
@@ -47,7 +73,7 @@
     min-height: 200px;
 }
 
-/* Card: Histórico Recente */
+
 .historico_box {
     background-color: var(--bg-card);
     border-radius: 8px;
@@ -76,7 +102,7 @@
     text-decoration: underline;
 }
 
-/* CARDS DOS TRENS */
+
 
 .linha_cima {
     display: flex;
@@ -137,11 +163,9 @@
     opacity: 0.7;
 }
 
-
 /* TABELA */
-
 .box_tabela {
-    height: 420px;      /* altura fixa: se tiver mais trens, aparece a barra de rolagem */
+    height: 420px;      
     overflow-y: auto;
 }
 
@@ -158,7 +182,7 @@
     color: var(--text-secondary);
 }
 
-/* cabeçalho fica fixo no topo enquanto a tabela rola */
+
 .box_tabela th {
     font-weight: bold;
     position: sticky;
@@ -181,7 +205,7 @@
 }
 
 
-/* DETALHES */
+
 
 .detalhes_trem_box h4 {
     color: var(--text-secondary);
@@ -194,9 +218,7 @@
 }
 
 
-/* ===== JANELA "NOVO TREM" ===== */
 
-/* fundo escuro que cobre a tela toda (começa escondido) */
 .modal_fundo {
     display: none;
     position: fixed;
@@ -210,7 +232,7 @@
     z-index: 1000;
 }
 
-/* quando o JavaScript adiciona a classe "aberto", ele aparece */
+
 .modal_fundo.aberto {
     display: flex;
 }
@@ -242,7 +264,7 @@
     cursor: pointer;
 }
 
-/* duas colunas lado a lado */
+
 .modal_colunas {
     display: flex;
     gap: 30px;
@@ -270,5 +292,29 @@
     border-radius: 6px;
     padding: 8px;
     width: 100%;
-    color-scheme: dark; /* deixa o calendário escuro */
+    color-scheme: dark; 
+}
+
+.titulo_pagina {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.btn_modo {
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 10px 18px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.btn_modo:hover {
+    opacity: 0.8;
+}
+
+.modo_usuario .so_admin {
+    display: none;
 }
